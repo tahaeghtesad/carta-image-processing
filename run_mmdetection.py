@@ -1,21 +1,12 @@
 import logging
 import os
 import sys
-from os import listdir
-from os.path import isfile, join
+
 import cv2
-from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
-import numpy as np
-
-from mmdet.apis import show_result_pyplot
-
-from mmdetection_test import NumpyEncoder
-from model_configs import configs
 
 from detector import Detector
-import json
-
+from model_configs import configs
 from video_handler import VideoHandler
 
 if __name__ == '__main__':
