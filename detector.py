@@ -23,6 +23,8 @@ class Detector:
         assert isinstance(img, list), 'Only provide list of four panes'
         start = time.time()
         result = inference_detector(self.model, img)
+        if self.model == 'seasaw':
+            result = result[0]
         self.logger.debug(f'Took {time.time() - start:.2f} (s) to infer.')
 
         persons = [[]] * len(img)

@@ -71,7 +71,7 @@ if __name__ == '__main__':
                 video_out.write(VideoHandler.merge_panes(panes))
                 success, image = video_in.read()
         except Exception  as e:
-            logger.error(f'Task failed! Model: {detector["model"]} Variant: {detector["variant"]} Frame: {count}')
+            logger.error(f'Task failed! Model: "{detector["model"]}" Variant: "{detector["variant"]}" Frame: {count}')
             logger.exception(e)
         pbar.update(1)
         count += 1
