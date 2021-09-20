@@ -24,7 +24,6 @@ class Detector:
         start = time.time()
         result = inference_detector(self.model, img)
         self.logger.debug(f'Took {time.time() - start:.2f} (s) to infer.')
-        self.logger.info(f'Result: {result}')
 
         try:
             persons = [[]] * len(img)
