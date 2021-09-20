@@ -10,7 +10,8 @@ import numpy as np
 
 from mmdet.apis import show_result_pyplot
 
-from mmdetection_test import configs, NumpyEncoder
+from mmdetection_test import NumpyEncoder
+from model_configs import configs
 
 from detector import Detector
 import json
@@ -24,8 +25,8 @@ if __name__ == '__main__':
                         level=logging.INFO)
     logger = logging.getLogger(__name__)
 
-    video_id = sys.argv[2]
-    detection_threshold = float(sys.argv[3])
+    video_id = sys.argv[1]
+    detection_threshold = float(sys.argv[2])
 
     detectors = []
     for model in configs.keys():
@@ -55,20 +56,25 @@ if __name__ == '__main__':
     count = 0
     pbar = tqdm(total=int(video_in.get(cv2.CAP_PROP_FRAME_COUNT)))
     while success:
-        panes = VideoHandler.extract_panes(image)
-        annotated_panes = []
-        for detector in detectors:
-            annotations = detector['engine'].infer(panes, detection_threshold)
-            for i in range(len(panes)):
-                for person in annotations[i]:
-                    panes[i] = cv2.rectangle(panes[i],
-                                             pt1=(int(person[0]), int(person[1])),
-                                             pt2=(int(person[2]), int(person[3])),
-                                             color=detector['color'],
-                                             thickness=2)
-            video_out.write(VideoHandler.merge_panes(panes))
-            success, image = video_in.read()
+        try:
+            panes = VideoHandler.extract_panes(image)
+            annotated_panes = []
+            for detector in detectors:
+                annotations = detector['engine'].infer(panes, detection_threshold)
+                for i in range(len(panes)):
+                    for person in annotations[i]:
+                        panes[i] = cv2.rectangle(panes[i],
+                                                 pt1=(int(person[0]), int(person[1])),
+                                                 pt2=(int(person[2]), int(person[3])),
+                                                 color=detector['color'],
+                                                 thickness=2)
+                video_out.write(VideoHandler.merge_panes(panes))
+                success, image = video_in.read()
+        except Exception  as e:
+            logger.error(f'Task failed! Model: {detector["model"]} Variant: {detector["variant"]} Frame: {count}')
+            logger.exception(e)
         pbar.update(1)
+        count += 1
 
     video_in.release()
     video_out.release()
