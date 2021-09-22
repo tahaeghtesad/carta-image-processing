@@ -51,8 +51,7 @@ class VideoHandler:
             os.mkdir(f'dataset/split/VID{id:03d}')
 
         for i in range(pane_count):
-            if not os.path.isdir(f'dataset/split/VID{id:03d}/pane_{i}'):
-                os.mkdir(f'dataset/split/VID{id:03d}/pane_{i}')
+            os.makedirs(f'dataset/split/VID{id:03d}/pane_{i}')
 
         success, image = video.read()
         assert success is True
@@ -67,7 +66,7 @@ class VideoHandler:
             if pane_count == 4:
                 panes = VideoHandler.extract_panes(image, pane_count)
 
-                thread_pool.map(lambda en: cv2.imwrite(f'dataset/split/{id}/pane_{en[0]}/frame_{count}.jpg', en[1]),
+                thread_pool.map(lambda en: cv2.imwrite(f'dataset/split/VID{id:03d}/pane_{en[0]}/frame_{count}.jpg', en[1]),
                                 enumerate(panes))
                 # cv2.imwrite(f'dataset/split/{id}/frame_{count}.jpg', panes[3])
 
