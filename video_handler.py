@@ -47,12 +47,12 @@ class VideoHandler:
         video = cv2.VideoCapture(path)
         pbar = tqdm(total=video.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        if not os.path.isdir(f'dataset/split/{id}'):
-            os.mkdir(f'dataset/split/{id}')
+        if not os.path.isdir(f'dataset/split/VID{id:%3d}'):
+            os.mkdir(f'dataset/split/VID{id:%3d}')
 
         for i in range(pane_count):
-            if not os.path.isdir(f'dataset/split/{id}/pane_{i}'):
-                os.mkdir(f'dataset/split/{id}/pane_{i}')
+            if not os.path.isdir(f'dataset/split/VID{id:%3d}/pane_{i}'):
+                os.mkdir(f'dataset/split/VID{id:%3d}/pane_{i}')
 
         success, image = video.read()
         assert success is True
