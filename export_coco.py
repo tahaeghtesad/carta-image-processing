@@ -37,11 +37,11 @@ class CocoExporter:
             img = cv2.imread(f'{base_path}/{image["file_name"]}')
             people = self.detector['engine'].infer([img], self.detection_threshold)[0]
             for person in people:
-                # img = cv2.rectangle(img,
-                #                     pt1=(int(person[0]), int(person[1])),
-                #                     pt2=(int(person[2]), int(person[3])),
-                #                     color=self.detector['color'],
-                #                     thickness=2)
+                img = cv2.rectangle(img,
+                                    pt1=(int(person[0]), int(person[1])),
+                                    pt2=(int(person[2]), int(person[3])),
+                                    color=self.detector['color'],
+                                    thickness=2)
                 dataset['annotations'].append({
                     'id': count,
                     'image_id': image['id'],
@@ -55,10 +55,10 @@ class CocoExporter:
                     ]
                 })
                 count += 1
-            # write_back_path = f'{base_path}/{video_id}_annotated/{detector["model"]}/{detector["variant"]}/{pane_id}/'
-            # if not os.path.isdir(write_back_path):
-            #     os.makedirs(write_back_path, exist_ok=True)
-            # cv2.imwrite(f'{write_back_path}/{frame_id}.jpg', img)
+            write_back_path = f'{base_path}/{video_id}_annotated/{detector["model"]}/{detector["variant"]}/{pane_id}/'
+            if not os.path.isdir(write_back_path):
+                os.makedirs(write_back_path, exist_ok=True)
+            cv2.imwrite(f'{write_back_path}/{frame_id}.jpg', img)
 
         return dataset
 
@@ -84,6 +84,8 @@ if __name__ == '__main__':
             }
 
             exporter = CocoExporter(detector, 0.5)
+
+            logger.info(f'Running export for model "{model}" with variant "{variant}"...')
             new_dataset = exporter.infer_dataset(base_path, dataset)
             write_dataset(f'{base_path}/annotations/VID001_{detector["model"]}_{detector["variant"]}.coco.json', new_dataset)
             del detector
