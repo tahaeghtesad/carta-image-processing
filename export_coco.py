@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import sys
@@ -8,16 +7,7 @@ from tqdm import tqdm
 
 from detector import Detector
 from model_configs import configs
-
-
-def load_dataset(path):
-    with open(path) as fd:
-        return json.load(fd)
-
-
-def write_dataset(path, dataset):
-    with open(path, 'w') as fd:
-        json.dump(dataset, fd)
+import util.file_handler
 
 
 class CocoExporter:
@@ -71,7 +61,7 @@ if __name__ == '__main__':
     base_path = 'dataset/split'
 
     for video_id in range(1, 25):
-        dataset = load_dataset(f'{base_path}/annotations/video_{video_id}.coco.json')
+        dataset = util.file_handler.load_dataset(f'{base_path}/annotations/video_{video_id}.coco.json')
 
         for model in configs.keys():
             for variant in configs[model].keys():
@@ -88,5 +78,5 @@ if __name__ == '__main__':
 
                 logger.info(f'Running export for model "{model}" with variant "{variant}" on video "video_{video_id}"...')
                 new_dataset = exporter.infer_dataset(base_path, dataset)
-                write_dataset(f'{base_path}/annotations/video_{video_id}_{detector["model"]}_{detector["variant"]}.coco.json', new_dataset)
+                util.file_handler.write_dataset(f'{base_path}/annotations/video_{video_id}_{detector["model"]}_{detector["variant"]}.coco.json', new_dataset)
                 del detector
