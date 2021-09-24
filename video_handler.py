@@ -8,6 +8,8 @@ import os
 import numpy as np
 from tqdm import tqdm
 
+from export_coco import write_dataset
+
 
 class VideoHandler:
 
@@ -47,12 +49,22 @@ class VideoHandler:
         video = cv2.VideoCapture(path)
         pbar = tqdm(total=video.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        if not os.path.isdir(f'dataset/split/VID{id:03d}'):
-            os.makedirs(f'dataset/split/VID{id:03d}', exist_ok=True)
+        dataset = {
+            'images': [],
+            'categories': [{
+                'id': 1,
+                'name': 'person',
+                'supercategory': 'none'
+            }],
+            'annotations': []
+        }
+
+        if not os.path.isdir(f'dataset/split/video_{id}'):
+            os.makedirs(f'dataset/split/video_{id}', exist_ok=True)
 
         for i in range(pane_count):
-            if not os.path.isdir(f'dataset/split/VID{id:03d}/pane_{i}'):
-                os.makedirs(f'dataset/split/VID{id:03d}/pane_{i}', exist_ok=True)
+            if not os.path.isdir(f'dataset/split/video_{id}/pane_{i}'):
+                os.makedirs(f'dataset/split/video_{id}/pane_{i}', exist_ok=True)
 
         success, image = video.read()
         assert success is True
@@ -66,15 +78,23 @@ class VideoHandler:
 
             if pane_count == 4:
                 panes = VideoHandler.extract_panes(image, pane_count)
+                for i in range(pane_count):
+                    dataset['images'].append({
+                        'id': count * pane_count + i,
+                        'file_name': f'video_{id}/pane_{i}/frame_{count}.jpg',
+                        'width': panes[i].shape[1],
+                        'height': panes[i].shape[0]
+                    })
 
-                thread_pool.map(lambda en: cv2.imwrite(f'dataset/split/VID{id:03d}/pane_{en[0]}/frame_{count}.jpg', en[1]),
+                thread_pool.map(lambda en: cv2.imwrite(f'dataset/split/video_{id}/pane_{en[0]}/frame_{count}.jpg', en[1]),
                                 enumerate(panes))
-                # cv2.imwrite(f'dataset/split/{id}/frame_{count}.jpg', panes[3])
 
                 success, image = video.read()
 
             pbar.update(1)
             count += 1
+
+        write_dataset(f'dataset/split/annotations/video_{id}.coco.json', dataset)
 
         thread_pool.close()
 

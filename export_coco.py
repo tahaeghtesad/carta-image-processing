@@ -69,8 +69,9 @@ if __name__ == '__main__':
                         level=logging.INFO)
     logger = logging.getLogger(__name__)
     base_path = 'dataset/split'
+    id = 1
 
-    dataset = load_dataset(f'{base_path}/annotations/VID001.coco.json')
+    dataset = load_dataset(f'{base_path}/annotations/video_{id}.coco.json')
 
     for model in configs.keys():
         for variant in configs[model].keys():
@@ -85,7 +86,7 @@ if __name__ == '__main__':
 
             exporter = CocoExporter(detector, 0.5)
 
-            logger.info(f'Running export for model "{model}" with variant "{variant}"...')
+            logger.info(f'Running export for model "{model}" with variant "{variant}" on video "video_{id}"...')
             new_dataset = exporter.infer_dataset(base_path, dataset)
-            write_dataset(f'{base_path}/annotations/VID001_{detector["model"]}_{detector["variant"]}.coco.json', new_dataset)
+            write_dataset(f'{base_path}/annotations/video_{id}_{detector["model"]}_{detector["variant"]}.coco.json', new_dataset)
             del detector
