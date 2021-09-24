@@ -2,14 +2,12 @@ import logging
 import sys
 
 import cv2
-from mmdet.apis import init_detector, inference_detector, show_result_pyplot, get_root_logger
 import json
-import time
 import numpy as np
 from model_configs import configs
 
 from detector import Detector
-from video_handler import VideoHandler
+from util.video_handler import VideoHandler
 
 
 class NumpyEncoder(json.JSONEncoder):

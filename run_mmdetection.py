@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 from detector import Detector
 from model_configs import configs
-from video_handler import VideoHandler
+from util.video_handler import VideoHandler
 
 
 def infer_video(video_id, detection_threshold, detector):

@@ -8,14 +8,14 @@ import os
 import numpy as np
 from tqdm import tqdm
 
-from export_coco import write_dataset
+import util.file_handler
 
 
 class VideoHandler:
 
     @staticmethod
     def get_file_name_by_id(id):
-        with open('dataset/info.csv') as fd:
+        with open('../dataset/info.csv') as fd:
             reader = csv.DictReader(fd)
             print(f'field names: {reader.fieldnames}')
             for row in reader:
@@ -94,7 +94,7 @@ class VideoHandler:
             pbar.update(1)
             count += 1
 
-        write_dataset(f'dataset/split/annotations/video_{id}.coco.json', dataset)
+        util.file_handler.write_dataset(f'dataset/split/annotations/video_{id}.coco.json', dataset)
 
         thread_pool.close()
 
