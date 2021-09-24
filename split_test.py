@@ -1,4 +1,5 @@
 from video_handler import VideoHandler
 
 if __name__ == '__main__':
-    VideoHandler.split(id)
+    for i in range(1, 25):
+        VideoHandler.split(i)
