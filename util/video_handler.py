@@ -15,7 +15,7 @@ class VideoHandler:
 
     @staticmethod
     def get_file_name_by_id(id):
-        with open('../dataset/info.csv') as fd:
+        with open('dataset/info.csv') as fd:
             reader = csv.DictReader(fd)
             print(f'field names: {reader.fieldnames}')
             for row in reader:
