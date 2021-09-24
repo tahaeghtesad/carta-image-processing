@@ -36,7 +36,10 @@ class CocoExporter:
                     'id': count,
                     'image_id': image['id'],
                     'category_id': 1,
-                    'score': float(person[4]),
+                    'segmentation': [],
+                    'attributes': {
+                        'score': float(person[4]),
+                    },
                     'bbox': [
                         float(person[0]),  # x
                         float(person[1]),  # y
