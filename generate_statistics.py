@@ -1,5 +1,6 @@
 import json
 import math
+from collections import defaultdict
 
 import cv2
 
@@ -11,6 +12,7 @@ import csv
 from util.file_handler import load_json
 
 configs = util.file_handler.load_json('configs.json')
+detectors = defaultdict(lambda: dict())
 
 
 def get_frame_count(path):
@@ -23,15 +25,14 @@ def get_frame_count(path):
 def compare(video, model, variant):
     print(f'Comparing model "{model}" with variant "{variant}" on video {video}')
 
-    detector = Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'])
+    detector = detectors[model][variant]
     handler = VideoHandler(f'dataset/videos/{VideoHandler.get_file_name_by_id(video)}.avi')
-    before_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.get_frames(0, 5)]
+    before_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.get_frames(1, 5)]
     after_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.get_frames(handler.frame_count - 6, 5)]
     before_inference_count = [len(frame_bbox) for frame_bbox in detector.infer(before_frames, detection_threshold=0.5)]
     after_inference_count = [len(frame_bbox) for frame_bbox in detector.infer(after_frames, detection_threshold=0.5)]
     before_inference = sum(before_inference_count) / len(before_inference_count)
     after_inference = sum(after_inference_count) / len(after_inference_count)
-
 
     ground_truth_set = load_json(
         f'dataset/annotations/{VideoHandler.get_coco_annotation_by_id(video)}/annotations/instances_default.json')
@@ -76,6 +77,11 @@ if __name__ == '__main__':
         'mape': lambda x, y: math.fabs(x - y) / y * 100
 
     }
+
+    for model in configs.keys():
+        for variant in configs[model].keys():
+            print(f'Loading model "{model}" with variant "{variant}"')
+            detectors[model][variant] = Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'])
 
     for loss in losses.keys():
         for model in configs.keys():
