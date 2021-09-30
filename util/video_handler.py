@@ -17,10 +17,25 @@ class VideoHandler:
     def get_file_name_by_id(id):
         with open('dataset/info.csv') as fd:
             reader = csv.DictReader(fd)
-            print(f'field names: {reader.fieldnames}')
             for row in reader:
                 if int(row['video_id']) == id:
                     return row['video original name'].split('.')[0]
+
+    @staticmethod
+    def get_coco_annotation_by_id(id):
+        with open('dataset/info.csv') as fd:
+            reader = csv.DictReader(fd)
+            for row in reader:
+                if int(row['video_id']) == id:
+                    return int(row['past_ids'][3:])
+
+    @staticmethod
+    def get_info_row_by_id(id, info):
+        with open('dataset/info.csv') as fd:
+            reader = csv.DictReader(fd)
+            for row in reader:
+                if int(row['video_id']) == id:
+                    return row[info]
 
     @staticmethod
     def extract_panes(image, pane_count=4):
@@ -94,7 +109,7 @@ class VideoHandler:
             pbar.update(1)
             count += 1
 
-        util.file_handler.write_dataset(f'dataset/split/annotations/video_{id}.coco.json', dataset)
+        util.file_handler.write_json(f'dataset/split/annotations/video_{id}.coco.json', dataset)
 
         thread_pool.close()
 
