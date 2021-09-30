@@ -13,6 +13,34 @@ import util.file_handler
 
 class VideoHandler:
 
+    def __init__(self, path) -> None:
+        super().__init__()
+        self.path = path
+
+        video_in = cv2.VideoCapture(self.path)
+        self.frame_count = int(video_in.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.width = int(video_in.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.fps = int(video_in.get(cv2.CAP_PROP_FPS))
+
+    def get_frames(self, start, count):
+        video_in = cv2.VideoCapture(self.path)
+        assert start + count < self.frame_count, f'Video {self.path} has {self.frame_count} frames, but you requested from {start} to {start + count}.'
+
+        frames = []
+        index = 0
+        for _ in range(start):
+            _, _ = video_in.read()
+            index += 1
+
+        for _ in range(count):
+            success, image = video_in.read()
+            assert success is True, f'Could not load frame {index}'
+            frames.append(image)
+            index += 1
+
+        return frames
+
     @staticmethod
     def get_file_name_by_id(id):
         with open('dataset/info.csv') as fd:

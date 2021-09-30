@@ -2,11 +2,15 @@ import json
 import math
 
 import cv2
+
+import util.file_handler
+from detector import Detector
 from util.video_handler import VideoHandler
 import csv
 
-from model_configs import configs
 from util.file_handler import load_json
+
+configs = util.file_handler.load_json('configs.json')
 
 
 def get_frame_count(path):
@@ -16,8 +20,18 @@ def get_frame_count(path):
     return frame_count
 
 
-def compare(video, model, variance):
-    inference_set = load_json(f'dataset/split/annotations/video_{video}_{model}_{variance}.coco.json')
+def compare(video, model, variant):
+    print(f'Comparing model "{model}" with variant "{variant}" on video {video}')
+
+    detector = Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'])
+    handler = VideoHandler(f'dataset/videos/{VideoHandler.get_file_name_by_id(video)}.avi')
+    before_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.get_frames(0, 5)]
+    after_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.get_frames(handler.frame_count - 6, 5)]
+    before_inference_count = [len(frame_bbox) for frame_bbox in detector.infer(before_frames, detection_threshold=0.5)]
+    after_inference_count = [len(frame_bbox) for frame_bbox in detector.infer(after_frames, detection_threshold=0.5)]
+    before_inference = sum(before_inference_count) / len(before_inference_count)
+    after_inference = sum(after_inference_count) / len(after_inference_count)
+
 
     ground_truth_set = load_json(
         f'dataset/annotations/{VideoHandler.get_coco_annotation_by_id(video)}/annotations/instances_default.json')
@@ -32,24 +46,6 @@ def compare(video, model, variance):
         [annotation for annotation in ground_truth_set['annotations'] if
          annotation['image_id'] == last_annotation_image_id])
 
-    first_frame_ids = [image['id'] for image in inference_set['images']][:5]
-    first_frames_list = [0] * 5
-    for annotation in inference_set['annotations']:
-        for i, image_id in enumerate(first_frame_ids):
-            if annotation['image_id'] == image_id:
-                first_frames_list[i] += 1
-
-    bboxes_first = sum(first_frames_list) / len(first_frames_list)
-
-    last_frame_ids = [image['id'] for image in inference_set['images']][-5:]
-    last_frame_list = [0] * 5
-    for annotation in inference_set['annotations']:
-        for i, image_id in enumerate(last_frame_ids):
-            if annotation['image_id'] == image_id:
-                last_frame_list[i] += 1
-
-    bboxes_last = sum(last_frame_list) / len(last_frame_list)
-
     # print(
     #     f'Video:{video}|model:{model}|variance:{variance}|Before stop:{bboxes_first}/{bboxes_gt_first}|After stop: {bboxes_last}/{bboxes_gt_last}')
 
@@ -57,9 +53,9 @@ def compare(video, model, variance):
         'video': video,
         'model': model,
         'variant': variant,
-        'before': bboxes_first,
+        'before': before_inference,
         'before_gt': bboxes_gt_first,
-        'after': bboxes_last,
+        'after': after_inference,
         'after_gt': bboxes_gt_last,
         'pane_color': VideoHandler.get_info_row_by_id(video, 'Panel 4 (RGB/GRAY)')
     }

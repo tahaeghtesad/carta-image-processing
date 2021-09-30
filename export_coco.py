@@ -6,7 +6,6 @@ import cv2
 from tqdm import tqdm
 
 from detector import Detector
-from model_configs import configs
 import util.file_handler
 
 
@@ -64,7 +63,8 @@ if __name__ == '__main__':
     base_path = 'dataset/split'
 
     for video_id in range(1, 25):
-        dataset = util.file_handler.load_dataset(f'{base_path}/annotations/video_{video_id}.coco.json')
+        dataset = util.file_handler.load_json(f'{base_path}/annotations/video_{video_id}.coco.json')
+        configs = util.file_handler.load_json('configs.json')
 
         for model in configs.keys():
             for variant in configs[model].keys():
@@ -81,5 +81,5 @@ if __name__ == '__main__':
 
                 logger.info(f'Running export for model "{model}" with variant "{variant}" on video "video_{video_id}"...')
                 new_dataset = exporter.infer_dataset(base_path, dataset)
-                util.file_handler.write_dataset(f'{base_path}/annotations/video_{video_id}_{detector["model"]}_{detector["variant"]}.coco.json', new_dataset)
+                util.file_handler.write_json(f'{base_path}/annotations/video_{video_id}_{detector["model"]}_{detector["variant"]}.coco.json', new_dataset)
                 del detector
