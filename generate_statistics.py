@@ -67,7 +67,7 @@ def analyse(result, when, loss):
 if __name__ == '__main__':
     fd = open('analysis.csv', 'w')
     writer = csv.writer(fd)
-    writer.writerow(['model', 'variant', 'color', 'when', 'loss_type', 'loss'])
+    writer.writerow(['model', 'variant', 'loss_type', 'loss'])
 
     losses = {
         # 'mse': lambda x, y: (x - y) ** 2,
@@ -84,21 +84,15 @@ if __name__ == '__main__':
     for loss in losses.keys():
         for model in configs.keys():
             for variant in configs[model].keys():
-                types = {
-                    'RGB': [],
-                    'GRAY': []
-                }
                 print(f'Analysing model "{model}" with variant "{variant}"')
-                for video in tqdm(range(1, 25)):
-                    result = compare(video, model, variant)
-                    for pane_color in types.keys():
-                        if result['pane_color'] == pane_color:
-                            types[pane_color].append(result)
+                results = [compare(video, model, variant) for video in range(1, 25)]
 
-                for color in types.keys():
-                    for when in ['before', 'after']:
-                        loss_avg = 0
-                        for result in types[color]:
-                            loss_avg += analyse(result, when, losses[loss]) / len(types[color])
-                        print(f'Model: {model}\tVariant: {variant}\tColor: {color}\tWhen: {when} \tloss type: {loss}\tloss: {loss_avg:.2f}')
-                        writer.writerow([model, variant, color, when, loss, loss_avg])
+                for when in ['before', 'after']:
+                    loss_sum = 0
+                    for result in results:
+                        loss_sum += analyse(result, when, losses[loss])
+
+                loss_avg = loss_sum / len(results) / 2
+
+                print(f'Model: {model}\tVariant: {variant}\tloss type: {loss}\tloss: {loss_avg:.2f}')
+                writer.writerow([model, variant, loss, loss_avg])
