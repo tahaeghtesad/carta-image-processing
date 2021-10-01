@@ -16,17 +16,21 @@ class VideoHandler:
     def __init__(self, path) -> None:
         super().__init__()
         self.path = path
+        self.frames = []
 
+        self.width = None
+        self.height = None
+        self.fps = None
+        self.frame_count = None
+
+    def __load_video(self):
         video_in = cv2.VideoCapture(self.path)
-        self.frame_count = self.__get_frame_count()
+        count = 0
+
         self.width = int(video_in.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.fps = int(video_in.get(cv2.CAP_PROP_FPS))
-        self.frames = []
 
-    def __get_frame_count(self):
-        video_in = cv2.VideoCapture(self.path)
-        count = 0
         while True:
             ret, frame = video_in.read()
             if not ret:
@@ -35,7 +39,8 @@ class VideoHandler:
             count += 1
 
         video_in.release()
-        return count
+        self.frame_count = count
+        print(f'Video {self.path} loaded. {self.width}x{self.height}|{self.fps}fps|{count}')
 
     def get_frames(self, start, count):
         return self.frames[start: start + count]
