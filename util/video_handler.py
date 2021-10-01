@@ -9,7 +9,7 @@ import numpy as np
 from tqdm import tqdm
 
 import util.file_handler
-from util.struct_util import FixedSizeBuffer
+from util.struct_util import FixedSizeBuffer, RingBuffer
 
 
 class VideoHandler:
@@ -35,20 +35,20 @@ class VideoHandler:
         self.height = int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.fps = int(video_in.get(cv2.CAP_PROP_FPS))
 
-        read_buffer = FixedSizeBuffer(self.hold)
+        read_buffer = RingBuffer(self.hold)
 
         while True:
             ret, frame = video_in.read()
             if not ret:
                 break
-            read_buffer.add(frame)
+            read_buffer.append(frame)
 
             count += 1
 
             if count == self.hold:
-                self.first_frames = read_buffer.buffer
+                self.first_frames = read_buffer.get()
 
-        self.last_frames = read_buffer.buffer
+        self.last_frames = read_buffer.get()
 
         video_in.release()
         self.frame_count = count
