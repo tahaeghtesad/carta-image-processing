@@ -11,10 +11,13 @@ import csv
 
 from util.file_handler import load_json
 
+from tqdm import tqdm
+
 configs = util.file_handler.load_json('configs.json')
 detectors = defaultdict(lambda: dict())
 videos = {}
-for video_id in range(1, 25):
+print(f'Loading Videos')
+for video_id in tqdm(range(1, 25)):
     videos[video_id] = VideoHandler(f'dataset/videos/{VideoHandler.get_file_name_by_id(video_id)}.avi', 5)
 
 
