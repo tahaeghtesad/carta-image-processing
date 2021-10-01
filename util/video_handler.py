@@ -16,6 +16,7 @@ class VideoHandler:
 
     def __init__(self, path, hold) -> None:
         super().__init__()
+        self.logger = logging.getLogger(__name__)
         self.path = path
         self.first_frames = []
         self.last_frames = []
@@ -52,7 +53,7 @@ class VideoHandler:
 
         video_in.release()
         self.frame_count = count
-        print(f'Video {self.path} loaded. {self.width}x{self.height}|{self.fps}fps|{count}')
+        self.logger.debug(f'Video {self.path} loaded. {self.width}x{self.height}|{self.fps}fps|{count}')
 
     @staticmethod
     def get_file_name_by_id(video_id):
