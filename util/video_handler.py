@@ -22,6 +22,7 @@ class VideoHandler:
         self.height = None
         self.fps = None
         self.frame_count = None
+        self.__load_video()
 
     def __load_video(self):
         video_in = cv2.VideoCapture(self.path)
@@ -46,19 +47,19 @@ class VideoHandler:
         return self.frames[start: start + count]
 
     @staticmethod
-    def get_file_name_by_id(id):
+    def get_file_name_by_id(video_id):
         with open('dataset/info.csv') as fd:
             reader = csv.DictReader(fd)
             for row in reader:
-                if int(row['video_id']) == id:
+                if int(row['video_id']) == video_id:
                     return row['video original name'].split('.')[0]
 
     @staticmethod
-    def get_coco_annotation_by_id(id):
+    def get_coco_annotation_by_id(video_id):
         with open('dataset/info.csv') as fd:
             reader = csv.DictReader(fd)
             for row in reader:
-                if int(row['video_id']) == id:
+                if int(row['video_id']) == video_id:
                     return int(row['past_ids'][3:])
 
     @staticmethod
