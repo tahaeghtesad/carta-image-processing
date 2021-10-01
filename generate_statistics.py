@@ -72,8 +72,8 @@ if __name__ == '__main__':
     writer.writerow(['model', 'variant', 'color', 'when', 'loss_type', 'loss'])
 
     losses = {
-        'mse': lambda x, y: (x - y) ** 2,
-        'mae': lambda x, y: math.fabs(x - y),
+        # 'mse': lambda x, y: (x - y) ** 2,
+        # 'mae': lambda x, y: math.fabs(x - y),
         'mape': lambda x, y: math.fabs(x - y) / y * 100
 
     }

@@ -35,7 +35,7 @@ class VideoHandler:
 
         for _ in range(count):
             success, image = video_in.read()
-            assert success is True, f'Could not load frame {index}'
+            assert success is True, f'Could not load frame {index}/{self.frame_count}'
             frames.append(image)
             index += 1
 
