@@ -15,13 +15,6 @@ configs = util.file_handler.load_json('configs.json')
 detectors = defaultdict(lambda: dict())
 
 
-def get_frame_count(path):
-    video_in = cv2.VideoCapture(path)
-    frame_count = int(video_in.get(cv2.CAP_PROP_FRAME_COUNT))
-    assert frame_count > 1, f'Bad path {path}'
-    return frame_count
-
-
 def compare(video, model, variant):
     print(f'Comparing model "{model}" with variant "{variant}" on video {video}')
 

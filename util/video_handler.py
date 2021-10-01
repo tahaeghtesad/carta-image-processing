@@ -18,14 +18,27 @@ class VideoHandler:
         self.path = path
 
         video_in = cv2.VideoCapture(self.path)
-        self.frame_count = int(video_in.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.frame_count = self.__get_frame_count()
         self.width = int(video_in.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.fps = int(video_in.get(cv2.CAP_PROP_FPS))
 
+    def __get_frame_count(self):
+        video_in = cv2.VideoCapture(self.path)
+        count = 0
+        while True:
+            ret, frame = video_in.read()
+            if not ret:
+                break
+            count += 1
+
+        video_in.release()
+        return count
+
     def get_frames(self, start, count):
         video_in = cv2.VideoCapture(self.path)
-        assert start + count < self.frame_count, f'Video {self.path} has {self.frame_count} frames, but you requested from {start} to {start + count}.'
+        assert start + count < self.frame_count, f'Video {self.path} has {self.frame_count} frames,' \
+                                                 f' but you requested from {start} to {start + count}.'
 
         frames = []
         index = 0
@@ -39,6 +52,7 @@ class VideoHandler:
             frames.append(image)
             index += 1
 
+        video_in.release()
         return frames
 
     @staticmethod
