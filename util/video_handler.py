@@ -9,7 +9,7 @@ import numpy as np
 from tqdm import tqdm
 
 import util.file_handler
-from struct_util import FixedSizeBuffer
+from util.struct_util import FixedSizeBuffer
 
 
 class VideoHandler:
