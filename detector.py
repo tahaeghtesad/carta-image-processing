@@ -35,8 +35,7 @@ class Detector:
                 for each_person in result[pane][self.person_class_id]:
                     if each_person[4] > detection_threshold:
                         persons[pane].append(each_person)
-
-        except IndexError as e:
+        except:
             persons = [[]] * len(img)
             for pane in range(len(img)):
                 for each_person in result[pane][0][self.person_class_id]:

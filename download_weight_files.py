@@ -9,7 +9,8 @@ for model in config.keys():
         url = config[model][variant]['url']
         file_name = url.split('/')[-1]
 
-        # urllib.request.urlretrieve(url, f'checkpoints/{file_name}')
+        urllib.request.urlretrieve(url, f'checkpoints/{file_name}')
+
 
         config[model][variant]['checkpoint'] = f'checkpoints/{file_name}'
 

@@ -9,19 +9,22 @@ import numpy as np
 from tqdm import tqdm
 
 import util.file_handler
+from struct_util import FixedSizeBuffer
 
 
 class VideoHandler:
 
-    def __init__(self, path) -> None:
+    def __init__(self, path, hold) -> None:
         super().__init__()
         self.path = path
-        self.frames = []
+        self.first_frames = []
+        self.last_frames = []
 
         self.width = None
         self.height = None
         self.fps = None
         self.frame_count = None
+        self.hold = hold
         self.__load_video()
 
     def __load_video(self):
@@ -32,19 +35,24 @@ class VideoHandler:
         self.height = int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.fps = int(video_in.get(cv2.CAP_PROP_FPS))
 
+        read_buffer = FixedSizeBuffer(self.hold)
+
         while True:
             ret, frame = video_in.read()
             if not ret:
                 break
-            self.frames.append(frame)
+            read_buffer.add(frame)
+
             count += 1
+
+            if count == self.hold:
+                self.first_frames = read_buffer.buffer
+
+        self.last_frames = read_buffer.buffer
 
         video_in.release()
         self.frame_count = count
         print(f'Video {self.path} loaded. {self.width}x{self.height}|{self.fps}fps|{count}')
-
-    def get_frames(self, start, count):
-        return self.frames[start: start + count]
 
     @staticmethod
     def get_file_name_by_id(video_id):

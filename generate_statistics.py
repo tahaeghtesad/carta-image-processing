@@ -15,7 +15,7 @@ configs = util.file_handler.load_json('configs.json')
 detectors = defaultdict(lambda: dict())
 videos = {}
 for video_id in range(1, 25):
-    videos[video_id] = VideoHandler(f'dataset/videos/{VideoHandler.get_file_name_by_id(video_id)}.avi')
+    videos[video_id] = VideoHandler(f'dataset/videos/{VideoHandler.get_file_name_by_id(video_id)}.avi', 5)
 
 
 def compare(video, model, variant):
@@ -23,8 +23,8 @@ def compare(video, model, variant):
 
     detector = detectors[model][variant]
     handler = videos[video]
-    before_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.get_frames(1, 5)]
-    after_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.get_frames(handler.frame_count - 6, 5)]
+    before_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.first_frames]
+    after_frames = [VideoHandler.extract_panes(frame)[3] for frame in handler.last_frames]
     before_inference_count = [len(frame_bbox) for frame_bbox in detector.infer(before_frames, detection_threshold=0.5)]
     after_inference_count = [len(frame_bbox) for frame_bbox in detector.infer(after_frames, detection_threshold=0.5)]
     before_inference = sum(before_inference_count) / len(before_inference_count)
