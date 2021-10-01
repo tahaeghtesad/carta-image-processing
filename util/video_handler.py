@@ -22,6 +22,7 @@ class VideoHandler:
         self.width = int(video_in.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.fps = int(video_in.get(cv2.CAP_PROP_FPS))
+        self.frames = []
 
     def __get_frame_count(self):
         video_in = cv2.VideoCapture(self.path)
@@ -30,30 +31,14 @@ class VideoHandler:
             ret, frame = video_in.read()
             if not ret:
                 break
+            self.frames.append(frame)
             count += 1
 
         video_in.release()
         return count
 
     def get_frames(self, start, count):
-        video_in = cv2.VideoCapture(self.path)
-        assert start + count < self.frame_count, f'Video {self.path} has {self.frame_count} frames,' \
-                                                 f' but you requested from {start} to {start + count}.'
-
-        frames = []
-        index = 0
-        for _ in range(start):
-            _, _ = video_in.read()
-            index += 1
-
-        for _ in range(count):
-            success, image = video_in.read()
-            assert success is True, f'Could not load frame {index}/{self.frame_count}'
-            frames.append(image)
-            index += 1
-
-        video_in.release()
-        return frames
+        return self.frames[start: start + count]
 
     @staticmethod
     def get_file_name_by_id(id):
@@ -143,8 +128,9 @@ class VideoHandler:
                         'height': panes[i].shape[0]
                     })
 
-                thread_pool.map(lambda en: cv2.imwrite(f'dataset/split/video_{id}/pane_{en[0]}/frame_{count}.jpg', en[1]),
-                                enumerate(panes))
+                thread_pool.map(
+                    lambda en: cv2.imwrite(f'dataset/split/video_{id}/pane_{en[0]}/frame_{count}.jpg', en[1]),
+                    enumerate(panes))
 
                 success, image = video.read()
 
