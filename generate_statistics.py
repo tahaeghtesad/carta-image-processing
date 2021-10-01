@@ -22,7 +22,6 @@ for video_id in tqdm(range(1, 25)):
 
 
 def compare(video, model, variant):
-    print(f'Comparing model "{model}" with variant "{variant}" on video {video}')
 
     detector = detectors[model][variant]
     handler = videos[video]
@@ -89,7 +88,8 @@ if __name__ == '__main__':
                     'RGB': [],
                     'GRAY': []
                 }
-                for video in range(1, 25):
+                print(f'Analysing model "{model}" with variant "{variant}"')
+                for video in tqdm(range(1, 25)):
                     result = compare(video, model, variant)
                     for pane_color in types.keys():
                         if result['pane_color'] == pane_color:
