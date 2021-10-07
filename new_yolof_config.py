@@ -3,9 +3,10 @@ data_root = 'crowdhuman/'
 classes = ('person', 'head', 'body')
 
 model = dict(
-    roi_head=dict(
+    type='YOLOF',
+    bbox_head=dict(
         type='YOLOFHead',
-        bbox_head=dict(num_classes=len(classes)))
+        num_classes=len(classes))
 )
 
 dataset_type = 'COCODataset'
