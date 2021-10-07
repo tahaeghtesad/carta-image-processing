@@ -9,7 +9,7 @@ model = dict(
         num_classes=len(classes))
 )
 
-dataset_type = 'COCODataset'
+dataset_type = 'CocoDataset'
 
 data = dict(
     train=dict(
