@@ -4,7 +4,10 @@ from tqdm import tqdm
 
 import util.file_handler
 
-with open('crowdhuman/annotation_val.odgt') as fd:
+mode = 'train'
+print(f'Running for mode: {mode}')
+
+with open(f'crowdhuman/annotation_{mode}.odgt') as fd:
     annotation_lines = fd.readlines()
 
 dataset = {
@@ -36,11 +39,12 @@ head_sizes = []
 for line in tqdm(annotation_lines):
     jsonified = json.loads(line)
     name = jsonified['ID']
-    img = cv2.imread(f'crowdhuman/images_val/{name}.jpg')
+    img = cv2.imread(f'crowdhuman/images_{mode}/{name}.jpg')
     dataset['images'].append({
         'file_name': f'{name}.jpg',
         'height': img.shape[0],
-        'width': img.shape[1]
+        'width': img.shape[1],
+        'id': image_id
     })
 
     for box in jsonified['gtboxes']:
@@ -58,7 +62,8 @@ for line in tqdm(annotation_lines):
                 'bbox': vbox,
                 'category_id': 1,
                 'is_crowd': 0,
-                'id': annotation_id
+                'id': annotation_id,
+                'image_id': image_id,
             })
             annotation_id += 1
 
@@ -68,7 +73,8 @@ for line in tqdm(annotation_lines):
                 'bbox': hbox,
                 'category_id': 2,
                 'is_crowd': 0,
-                'id': annotation_id
+                'id': annotation_id,
+                'image_id': image_id,
             })
             annotation_id += 1
             head_sizes.append(dataset['annotations'][-1]['area'])
@@ -79,11 +85,12 @@ for line in tqdm(annotation_lines):
                 'bbox': fbox,
                 'category_id': 3,
                 'is_crowd': 0,
-                'id': annotation_id
+                'id': annotation_id,
+                'image_id': image_id,
             })
             annotation_id += 1
 
     image_id += 1
 
 print(f'Average head area: {sum(head_sizes)/len(head_sizes)}')
-util.file_handler.write_json('crowdhuman/annotation_val.json', dataset)
+util.file_handler.write_json(f'crowdhuman/annotation_{mode}.json', dataset)
