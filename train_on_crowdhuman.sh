@@ -3,7 +3,7 @@
 #SBATCH --gres=gpu:8
 #SBATCH --mem=250GB
 #SBATCH -N 1
-
+#SBATCH -A laszka
 
 source /project/cacds/apps/anaconda3/5.0.1/etc/profile.d/conda.sh
 
