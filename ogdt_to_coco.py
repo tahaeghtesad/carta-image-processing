@@ -61,7 +61,7 @@ for line in tqdm(annotation_lines):
                 'area': vbox[2] * vbox[3],
                 'bbox': vbox,
                 'category_id': 1,
-                'is_crowd': 0,
+                'iscrowd': 0,
                 'id': annotation_id,
                 'image_id': image_id,
             })
@@ -72,7 +72,7 @@ for line in tqdm(annotation_lines):
                 'area': hbox[2] * hbox[3],
                 'bbox': hbox,
                 'category_id': 2,
-                'is_crowd': 0,
+                'iscrowd': 0,
                 'id': annotation_id,
                 'image_id': image_id,
             })
@@ -84,7 +84,7 @@ for line in tqdm(annotation_lines):
                 'area': fbox[2] * fbox[3],
                 'bbox': fbox,
                 'category_id': 3,
-                'is_crowd': 0,
+                'iscrowd': 0,
                 'id': annotation_id,
                 'image_id': image_id,
             })
@@ -93,4 +93,6 @@ for line in tqdm(annotation_lines):
     image_id += 1
 
 print(f'Average head area: {sum(head_sizes)/len(head_sizes)}')
+print(f'Total images: {image_id}')
+print(f'Total annotations: {annotation_id}')
 util.file_handler.write_json(f'crowdhuman/annotation_{mode}.json', dataset)
