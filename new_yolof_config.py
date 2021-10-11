@@ -11,6 +11,10 @@ model = dict(
 
 dataset_type = 'CocoDataset'
 
+optimiser = dict(
+    lr=0.012  # From base 0.12
+)
+
 data = dict(
     train=dict(
         ann_file=data_root + 'annotation_train.json',
