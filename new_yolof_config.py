@@ -11,7 +11,7 @@ model = dict(
 
 dataset_type = 'CocoDataset'
 
-optimiser = dict(
+optimizer = dict(
     lr=0.012  # From base 0.12
 )
 
