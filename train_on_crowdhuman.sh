@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J yolofq
+#SBATCH -J yolof
 #SBATCH --gres=gpu:8
 #SBATCH --mem=250GB
 #SBATCH -N 1
@@ -13,4 +13,4 @@ conda activate mmdetection
 
 cd /home/teghtesa/carta-image-processing
 
-python mmdetection/tools/train.py new_yolof_config.py
+python mmdetection/tools/dist_train.sh new_yolof_config.py 8
