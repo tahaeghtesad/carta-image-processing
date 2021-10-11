@@ -13,4 +13,4 @@ conda activate mmdetection
 
 cd /home/teghtesa/carta-image-processing
 
-python mmdetection/tools/dist_train.sh new_yolof_config.py 8
+bash mmdetection/tools/dist_train.sh new_yolof_config.py 8
