@@ -15,6 +15,10 @@ optimizer = dict(
     lr=0.012  # From base 0.12
 )
 
+runner = dict(
+    max_epochs = 64 # From base 12
+)
+
 data = dict(
     train=dict(
         ann_file=data_root + 'annotation_train.json',
