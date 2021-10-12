@@ -8,7 +8,7 @@ from mmdet.datasets import CocoDataset
 
 
 class Detector:
-    def __init__(self, config, checkpoint, device='cuda:0') -> None:
+    def __init__(self, config, checkpoint, detection_class, device='cuda:0') -> None:
         super().__init__()
         self.logger = logging.getLogger(__name__)
 
@@ -16,10 +16,11 @@ class Detector:
         # init a detector
         self.model = init_detector(config, checkpoint, device=device)
         self.logger.debug(f'Took {time.time() - start:.2f} (s) to init')
+        self.detection_class = detection_class
         self.person_class_id = self.__get_person_class()
 
     def __get_person_class(self):
-        person_class = self.model.CLASSES.index('head')
+        person_class = self.model.CLASSES.index(self.detection_class)
         assert person_class != -1, 'Class person not found'
         return person_class
 

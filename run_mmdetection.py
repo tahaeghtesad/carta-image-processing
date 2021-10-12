@@ -17,7 +17,7 @@ def infer_video(video_id, detection_threshold, detector):
     dim = image.shape
     if not os.path.isdir(f'dataset/annotated/'):
         os.mkdir(f'dataset/annotated')
-    video_out = cv2.VideoWriter(f'dataset/annotated/{video_id}_{detector["model"]}_{detector["variant"]}.avi',
+    video_out = cv2.VideoWriter(f'dataset/annotated/{video_id}_{detector["model"]}_{detector["variant"]}_{detector["engine"].detection_class}.avi',
                                 cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
                                 video_in.get(cv2.CAP_PROP_FPS),
                                 (dim[1], dim[0]))
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         'variant': 'retrained',
         'engine': Detector('new_yolof_config.py',
                            'work_dirs/new_yolof_config/epoch_42.pth',
-                           ),
+                           'head'),
         'color': (255, 0, 0)
     }
-    infer_video(1, 0.3, detector)
+    infer_video(1, 0.7, detector)
