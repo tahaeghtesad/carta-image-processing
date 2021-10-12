@@ -56,15 +56,12 @@ if __name__ == '__main__':
                         format='%(asctime)s - %(name)s - %(threadName)s - %(levelname)s - %(message)s',
                         level=logging.INFO)
     logger = logging.getLogger(__name__)
-
-    for model in configs.keys():
-        for variant in configs[model].keys():
-            detector = {
-                        'model': model,
-                        'variant': variant,
-                        'engine': Detector(configs[model][variant]['config'],
-                                           configs[model][variant]['checkpoint'],
-                                           ),
-                        'color': configs[model][variant]['color']
-                    }
-            infer_video('VID001', 0.5, detector)
+    detector = {
+        'model': 'yolof',
+        'variant': 'retrained',
+        'engine': Detector('new_yolof_config.py',
+                           'work_dirs/new_yolof_config/epoch_42.pth',
+                           ),
+        'color': (255, 0, 0)
+    }
+    infer_video(1, 0.3, detector)

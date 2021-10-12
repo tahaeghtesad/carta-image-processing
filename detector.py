@@ -19,7 +19,7 @@ class Detector:
         self.person_class_id = self.__get_person_class()
 
     def __get_person_class(self):
-        person_class = self.model.CLASSES.index('person')
+        person_class = self.model.CLASSES.index('head')
         assert person_class != -1, 'Class person not found'
         return person_class
 
