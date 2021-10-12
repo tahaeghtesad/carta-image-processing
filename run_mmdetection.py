@@ -6,7 +6,6 @@ import cv2
 from tqdm import tqdm
 
 from detector import Detector
-from model_configs import configs
 from util.video_handler import VideoHandler
 
 
