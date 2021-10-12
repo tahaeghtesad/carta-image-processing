@@ -36,9 +36,11 @@ def infer_video(video_id, detection_threshold, detector):
                                              color=detector['color'],
                                              thickness=2)
             video_out.write(VideoHandler.merge_panes(panes))
+
+            pbar.update(1)
+            count += 1
+
             success, image = video_in.read()
-        pbar.update(1)
-        count += 1
 
     except Exception as e:
         logger.error(f'Task failed! Model: "{detector["model"]}" Variant: "{detector["variant"]}" Frame: {count}')
