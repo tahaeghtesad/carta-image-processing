@@ -52,9 +52,13 @@ for line in tqdm(annotation_lines):
                 ('ignore' not in box['head_attr'] or box['head_attr']['ignore'] == 0) and \
                 ('occ' not in box['head_attr'] or box['head_attr']['occ'] == 0) and \
                 ('unsure' not in box['head_attr'] or box['head_attr']['unsure'] == 0):
+
+            vbox = box['vbox']  # visible box # 1
             hbox = box['hbox']  # head box # 2
             fbox = box['fbox']  # full box # 3
-            vbox = box['vbox']  # visible box # 1
+            check_bbox(vbox, img)
+            check_bbox(hbox, img)
+            check_bbox(fbox, img)
 
             # visible, marked as person
             dataset['annotations'].append({
