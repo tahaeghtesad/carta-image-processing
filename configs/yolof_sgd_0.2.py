@@ -1,4 +1,4 @@
-_base_ = ['configs/new_yolof_config.py']
+_base_ = ['new_yolof_config.py']
 
 optimizer = dict(
     type='SGD',
