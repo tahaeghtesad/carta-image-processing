@@ -2,7 +2,7 @@
 
 #SBATCH -J yolof
 #SBATCH --gres=gpu:1
-#SBATCH --mem=32GB
+#SBATCH --mem=128GB
 #SBATCH -N 1
 #SBATCH -A laszka
 #SBATCH -t 96:00:00
