@@ -1,4 +1,5 @@
 import subprocess
+import time
 
 
 def run(target):
@@ -18,3 +19,4 @@ if __name__ == '__main__':
     for target in targets:
         print(f'running training for {target}')
         run(target)
+        time.sleep(60)
