@@ -64,6 +64,10 @@ def run_inference_on_video(video_id):
 
     for model in configs.keys():
         for variant in configs[model].keys():
+            logging.getLogger(__name__).info(f'Loading model {model}/{variant}.')
+            logging.getLogger(__name__).info(f'config path: {configs[model][variant]["config"]}')
+            logging.getLogger(__name__).info(f'checkpoint path: {configs[model][variant]["checkpoint"]}')
+
             detector = {
                 'model': model,
                 'variant': variant,
