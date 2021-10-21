@@ -105,6 +105,7 @@ class VideoHandler:
         path = f'dataset/videos/{file}.avi'
         video = cv2.VideoCapture(path)
         pbar = tqdm(total=video.get(cv2.CAP_PROP_FRAME_COUNT))
+        pbar.set_description(f'video_{id}')
 
         dataset = {
             'images': [],
