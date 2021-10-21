@@ -87,5 +87,5 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     base_path = 'dataset/split'
 
-    with multiprocessing.pool.ThreadPool(8) as tp:
+    with multiprocessing.Pool(8) as tp:
         tp.map(run_inference_on_video, range(1, 25))
