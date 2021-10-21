@@ -67,13 +67,12 @@ def run_inference_on_video(video_id):
         for variant in configs[model].keys():
             logging.getLogger(__name__).info(f'Loading model {model}/{variant}.')
             logging.getLogger(__name__).info(f'config path: {configs[model][variant]["config"]}')
-            logging.getLogger(__name__).info(f'checkpoint path: {configs[model][variant]["checkpoint"]}')
+            logging.getLogger(__name__).info(f'checkpoint path: {configs[model][variant]["checkpoint"]}-{type(configs[model][variant]["checkpoint"])}')
 
             detector = {
                 'model': model,
                 'variant': variant,
-                'engine': Detectron2Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'], 'ped'),
-                'color': configs[model][variant]['color']
+                'engine': Detectron2Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'], 'ped')
             }
             detectors.append(detector)
 
@@ -94,5 +93,5 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     base_path = 'dataset/split'
 
-    with multiprocessing.Pool(8) as tp:
+    with multiprocessing.Pool(4) as tp:
         tp.map(run_inference_on_video, range(1, 25))
