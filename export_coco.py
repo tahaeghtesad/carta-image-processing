@@ -61,6 +61,7 @@ class CocoExporter:
 def run_inference_on_video(video_id):
     dataset = util.file_handler.load_json(f'{base_path}/annotations/video_{video_id}.coco.json')
     configs = util.file_handler.load_json('detectron2_configs.json')
+    detectors = []
 
     for model in configs.keys():
         for variant in configs[model].keys():
@@ -74,14 +75,16 @@ def run_inference_on_video(video_id):
                 'engine': Detectron2Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'], 'ped'),
                 'color': configs[model][variant]['color']
             }
+            detectors.append(detector)
 
-            exporter = CocoExporter(detector, 0.5)
+    for detector in detectors:
+        exporter = CocoExporter(detector, 0.5)
 
-            logger.info(f'Running export for model "{model}" with variant "{variant}" on video "video_{video_id}"...')
-            new_dataset = exporter.infer_dataset(base_path, dataset)
-            util.file_handler.write_json(
-                f'{base_path}/annotations/video_{video_id}_{detector["model"]}_{detector["variant"]}.coco.json',
-                new_dataset)
+        logger.info(f'Running export for model "{detector["model"]}" with variant "{detector["variant"]}" on video "video_{video_id}"...')
+        new_dataset = exporter.infer_dataset(base_path, dataset)
+        util.file_handler.write_json(
+            f'{base_path}/annotations/video_{video_id}_{detector["model"]}_{detector["variant"]}.coco.json',
+            new_dataset)
 
 
 if __name__ == '__main__':

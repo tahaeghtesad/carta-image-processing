@@ -17,7 +17,7 @@ class Detectron2Detector(Detector):
         cfg = get_cfg()
         cfg.merge_from_file(self.config)
 
-        cfg.MODEL.WEIGHTS = self.checkpoint
+        cfg.merge_from_list(['MODEL.WEIGHTS', f'{self.checkpoint}'])
         cfg.MODEL.DEVICE = self.device
         cfg.freeze()
         return cfg
