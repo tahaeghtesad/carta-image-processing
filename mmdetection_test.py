@@ -5,8 +5,8 @@ import cv2
 import json
 import numpy as np
 
-from detector import Detector
-from file_handler import load_json
+from detectors.mmdetectiondetector import MMDetectionDetector
+from util.file_handler import load_json
 from util.video_handler import VideoHandler
 
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     config = configs['scnet']['r-101-fpn']
 
-    detector = Detector(config['config'], config['checkpoint'])
+    detector = MMDetectionDetector(config['config'], config['checkpoint'])
     print(detector.model.CLASSES)
     for i in range(len(detector.model.CLASSES)):
         if detector.model.CLASSES[i] == 'person':

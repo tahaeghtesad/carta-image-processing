@@ -166,5 +166,5 @@ class VideoHandler:
         util.file_handler.write_json(f'dataset/split/annotations/video_{id}.coco.json', dataset)
 
         # thread_pool.close()
-
+        pbar.close()
         return count

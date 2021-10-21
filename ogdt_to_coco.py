@@ -1,5 +1,6 @@
 import json
 import cv2
+import numpy as np
 from tqdm import tqdm
 
 import util.file_handler
@@ -35,6 +36,7 @@ dataset = {
 image_id = 0
 annotation_id = 0
 head_sizes = []
+rgb_sum = np.zeros(3)
 
 for line in tqdm(annotation_lines):
     jsonified = json.loads(line)
@@ -47,6 +49,9 @@ for line in tqdm(annotation_lines):
         'id': image_id
     })
 
+    for i in range(3):
+        rgb_sum[i] += img[:, :, i].mean()
+
     for box in jsonified['gtboxes']:
         if box['tag'] == 'person' and\
                 ('ignore' not in box['head_attr'] or box['head_attr']['ignore'] == 0) and \
@@ -56,9 +61,6 @@ for line in tqdm(annotation_lines):
             vbox = box['vbox']  # visible box # 1
             hbox = box['hbox']  # head box # 2
             fbox = box['fbox']  # full box # 3
-            check_bbox(vbox, img)
-            check_bbox(hbox, img)
-            check_bbox(fbox, img)
 
             # visible, marked as person
             dataset['annotations'].append({
@@ -96,7 +98,11 @@ for line in tqdm(annotation_lines):
 
     image_id += 1
 
+
+rgb_mean = rgb_sum / len(annotation_lines)
+
 print(f'Average head area: {sum(head_sizes)/len(head_sizes)}')
 print(f'Total images: {image_id}')
 print(f'Total annotations: {annotation_id}')
+print(f'BGR mean: {rgb_mean}')
 util.file_handler.write_json(f'crowdhuman/annotation_{mode}.json', dataset)

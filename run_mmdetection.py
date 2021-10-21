@@ -5,7 +5,7 @@ import sys
 import cv2
 from tqdm import tqdm
 
-from detector import Detector
+from detectors.mmdetectiondetector import MMDetectionDetector
 from util.video_handler import VideoHandler
 
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     detector = {
         'model': 'yolof',
         'variant': 'retrained',
-        'engine': Detector('new_yolof_config.py',
+        'engine': MMDetectionDetector('new_yolof_config.py',
                            'work_dirs/new_yolof_config/epoch_42.pth',
                            'head'),
         'color': (255, 0, 0)

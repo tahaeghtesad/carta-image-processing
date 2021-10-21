@@ -1,11 +1,8 @@
-import json
 import math
 from collections import defaultdict
 
-import cv2
-
 import util.file_handler
-from detector import Detector
+from detectors.mmdetectiondetector import MMDetectionDetector
 from util.video_handler import VideoHandler
 import csv
 
@@ -79,7 +76,7 @@ if __name__ == '__main__':
     for model in configs.keys():
         for variant in configs[model].keys():
             print(f'Loading model "{model}" with variant "{variant}"')
-            detectors[model][variant] = Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'])
+            detectors[model][variant] = MMDetectionDetector(configs[model][variant]['config'], configs[model][variant]['checkpoint'])
 
     for loss in losses.keys():
         for model in configs.keys():
