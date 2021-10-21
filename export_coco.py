@@ -67,7 +67,7 @@ def run_inference_on_video(video_id):
             detector = {
                 'model': model,
                 'variant': variant,
-                'engine': Detectron2Detector(configs['config'], configs['checkpoint'], 'ped'),
+                'engine': Detectron2Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'], 'ped'),
                 'color': configs[model][variant]['color']
             }
 
