@@ -6,7 +6,7 @@ import sys
 import cv2
 from tqdm import tqdm
 
-from detectors.detector import MMDetectionDetector
+from detectors.mmdetectiondetector import MMDetectionDetector
 import util.file_handler
 from detectors.detectron2detector import Detectron2Detector
 
