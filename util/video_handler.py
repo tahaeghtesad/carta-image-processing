@@ -119,41 +119,49 @@ class VideoHandler:
         if not os.path.isdir(f'dataset/split/video_{id}'):
             os.makedirs(f'dataset/split/video_{id}', exist_ok=True)
 
-        for i in range(pane_count):
-            if not os.path.isdir(f'dataset/split/video_{id}/pane_{i}'):
-                os.makedirs(f'dataset/split/video_{id}/pane_{i}', exist_ok=True)
+        # for i in range(pane_count):
+        #     if not os.path.isdir(f'dataset/split/video_{id}/pane_{i}'):
+        #         os.makedirs(f'dataset/split/video_{id}/pane_{i}', exist_ok=True)
 
         success, image = video.read()
         assert success is True
 
         dim = image.shape
 
-        thread_pool = ThreadPool(4)
+        # thread_pool = ThreadPool(4)
 
         count = 0
         while success:
 
-            if pane_count == 4:
-                panes = VideoHandler.extract_panes(image, pane_count)
-                for i in range(pane_count):
-                    dataset['images'].append({
-                        'id': count * pane_count + i,
-                        'file_name': f'video_{id}/pane_{i}/frame_{count}.jpg',
-                        'width': panes[i].shape[1],
-                        'height': panes[i].shape[0]
-                    })
+            # if pane_count == 4:
+            #     panes = VideoHandler.extract_panes(image, pane_count)
+            #     for i in range(pane_count):
+            #         dataset['images'].append({
+            #             'id': count * pane_count + i,
+            #             'file_name': f'video_{id}/pane_{i}/frame_{count}.jpg',
+            #             'width': panes[i].shape[1],
+            #             'height': panes[i].shape[0]
+            #         })
+            #
+            #     thread_pool.map(
+            #         lambda en: cv2.imwrite(f'dataset/split/video_{id}/pane_{en[0]}/frame_{count}.jpg', en[1]),
+            #         enumerate(panes))
 
-                thread_pool.map(
-                    lambda en: cv2.imwrite(f'dataset/split/video_{id}/pane_{en[0]}/frame_{count}.jpg', en[1]),
-                    enumerate(panes))
+            dataset['images'].append(dict(
+                id=count,
+                file_name=f'video_{id}/frame_{count}.jpg',
+                width=image.shape[1],
+                height=image.shape[0]
+            ))
+            cv2.imwrite(f'dataset/split/video_{id}/frame_{count}.jpg', image)
 
-                success, image = video.read()
+            success, image = video.read()
 
             pbar.update(1)
             count += 1
 
         util.file_handler.write_json(f'dataset/split/annotations/video_{id}.coco.json', dataset)
 
-        thread_pool.close()
+        # thread_pool.close()
 
         return count

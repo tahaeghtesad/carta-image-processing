@@ -20,8 +20,9 @@ class CocoExporter:
         count = 0
         for image in tqdm(dataset['images']):
             video_id = image["file_name"].split('/')[0]
-            pane_id = image["file_name"].split('/')[1]
-            frame_id = image["file_name"].split('/')[2].split('.')[0]
+            # pane_id = image["file_name"].split('/')[1]
+            # frame_id = image["file_name"].split('/')[2].split('.')[0]
+            frame_id = image['file_name'].split('/')[1].split('.')[0]
 
             img = cv2.imread(f'{base_path}/{image["file_name"]}')
             people = self.detector['engine'].infer([img], self.detection_threshold)[0]
@@ -47,7 +48,7 @@ class CocoExporter:
                     ]
                 })
                 count += 1
-            write_back_path = f'{base_path}/{video_id}_annotated/{detector["model"]}/{detector["variant"]}/{pane_id}/'
+            write_back_path = f'{base_path}/{video_id}_annotated/{detector["model"]}/{detector["variant"]}/'
             if not os.path.isdir(write_back_path):
                 os.makedirs(write_back_path, exist_ok=True)
             cv2.imwrite(f'{write_back_path}/{frame_id}.jpg', img)
@@ -73,7 +74,7 @@ if __name__ == '__main__':
                     'variant': variant,
                     'engine': Detector(configs[model][variant]['config'],
                                        configs[model][variant]['checkpoint'],
-                                       ),
+                                       'person'),
                     'color': configs[model][variant]['color']
                 }
 
