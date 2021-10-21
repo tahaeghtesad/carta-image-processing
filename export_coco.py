@@ -60,7 +60,7 @@ class CocoExporter:
 
 def run_inference_on_video(video_id):
     dataset = util.file_handler.load_json(f'{base_path}/annotations/video_{video_id}.coco.json')
-    configs = util.file_handler.load_json('configs.json')
+    configs = util.file_handler.load_json('detectron2_configs.json')
 
     for model in configs.keys():
         for variant in configs[model].keys():
