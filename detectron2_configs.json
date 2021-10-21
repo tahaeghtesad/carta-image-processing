@@ -2,11 +2,11 @@
   "faster-rcnn": {
         "noh-nms": {
             "config": "PedestrianDetection-NohNMS/configs/CrowdHuman/faster_rcnn_R_50_FPN_baseline_iou_0.5_noh_nms.yaml",
-            "checkpoint": "PedestrianDetection-NohNMS/checkpoints/noh_nms_model_final.pth"
+            "checkpoint": "checkpoints/noh_nms_model_final.pth"
         },
         "default": {
             "config": "PedestrianDetection-NohNMS/configs/CrowdHuman/faster_rcnn_R_50_FPN_baseline_iou_0.5.yaml",
-            "checkpoint": "PedestrianDetection-NohNMS/checkpoints/faster_rcnn_model_final.pth"
+            "checkpoint": "checkpoints/faster_rcnn_model_final.pth"
         }
     }
 }
