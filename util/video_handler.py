@@ -162,7 +162,7 @@ class VideoHandler:
             count += 1
 
         if not os.path.isdir(f'dataset/split/annotations'):
-            os.makedirs(f'dataset/split/annotation', exist_ok=True)
+            os.makedirs(f'dataset/split/annotations', exist_ok=True)
         util.file_handler.write_json(f'dataset/split/annotations/video_{id}.coco.json', dataset)
 
         # thread_pool.close()
