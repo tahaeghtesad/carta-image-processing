@@ -8,7 +8,7 @@ import torch
 
 
 class Detectron2Detector(Detector):
-    def __init__(self, config, checkpoint, detection_class, device='cpu') -> None:
+    def __init__(self, config, checkpoint, detection_class, device='cuda') -> None:
         super().__init__(config, checkpoint, detection_class, device)
         self.logger = logging.getLogger(__name__)
         self.predictor = DefaultPredictor(self.__setup_cfg())
@@ -34,6 +34,6 @@ class Detectron2Detector(Detector):
 
             for box, score, class_ in zip(boxes, scores, classes):
                 if score > detection_threshold:
-                    ret.append(box)
+                    ret.append((box, score))
 
         return ret

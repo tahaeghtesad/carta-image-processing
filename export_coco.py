@@ -30,8 +30,8 @@ class CocoExporter:
             people = self.detector['engine'].infer(img, self.detection_threshold)
             for person in people:
                 img = cv2.rectangle(img,
-                                    pt1=(int(person[0]), int(person[1])),
-                                    pt2=(int(person[2]), int(person[3])),
+                                    pt1=(int(person[0][0]), int(person[0][1])),
+                                    pt2=(int(person[0][2]), int(person[0][3])),
                                     color=self.detector['color'],
                                     thickness=2)
                 dataset['annotations'].append({
@@ -40,13 +40,13 @@ class CocoExporter:
                     'category_id': 1,
                     'segmentation': [],
                     'attributes': {
-                        'score': float(person[4]),
+                        'score': float(person[1]),
                     },
                     'bbox': [
-                        float(person[0]),  # x
-                        float(person[1]),  # y
-                        float(person[2] - person[0]),  # width
-                        float(person[3] - person[1])  # height
+                        float(person[0][0]),  # x
+                        float(person[0][1]),  # y
+                        float(person[0][2] - person[0][0]),  # width
+                        float(person[0][3] - person[0][1])  # height
                     ]
                 })
                 count += 1
@@ -58,10 +58,15 @@ class CocoExporter:
         return dataset
 
 
-def run_inference_on_video(video_id):
+def get_detector(framework):
+    if framework == 'detectron2':
+        return Detectron2Detector
+    elif framework == 'mmdetection':
+        return MMDetectionDetector
+
+
+def run_inference_on_video(video_id, configs, framework):
     dataset = util.file_handler.load_json(f'{base_path}/annotations/video_{video_id}.coco.json')
-    configs = util.file_handler.load_json('detectron2_configs.json')
-    detectors = []
 
     for model in configs.keys():
         for variant in configs[model].keys():
@@ -72,18 +77,17 @@ def run_inference_on_video(video_id):
             detector = {
                 'model': model,
                 'variant': variant,
-                'engine': Detectron2Detector(configs[model][variant]['config'], configs[model][variant]['checkpoint'], 'ped')
+                'engine': get_detector(framework)(configs[model][variant]['config'], configs[model][variant]['checkpoint'], 'person'),
+                'color': (255, 0, 0)
             }
-            detectors.append(detector)
 
-    for detector in detectors:
-        exporter = CocoExporter(detector, 0.5)
+            exporter = CocoExporter(detector, 0.5)
 
-        logger.info(f'Running export for model "{detector["model"]}" with variant "{detector["variant"]}" on video "video_{video_id}"...')
-        new_dataset = exporter.infer_dataset(base_path, dataset)
-        util.file_handler.write_json(
-            f'{base_path}/annotations/video_{video_id}_{detector["model"]}_{detector["variant"]}.coco.json',
-            new_dataset)
+            logger.info(f'Running export for model "{detector["model"]}" with variant "{detector["variant"]}" on video "video_{video_id}"...')
+            new_dataset = exporter.infer_dataset(base_path, dataset)
+            util.file_handler.write_json(
+                f'{base_path}/annotations/video_{video_id}_{detector["model"]}_{detector["variant"]}.coco.json',
+                new_dataset)
 
 
 if __name__ == '__main__':
@@ -91,7 +95,11 @@ if __name__ == '__main__':
                         format='%(asctime)s - %(name)s - %(threadName)s - %(levelname)s - %(message)s',
                         level=logging.INFO)
     logger = logging.getLogger(__name__)
-    base_path = 'dataset/split'
+    base_path = 'dataset/split_pane'
 
-    with multiprocessing.Pool(4) as tp:
-        tp.map(run_inference_on_video, range(1, 25))
+    # for video_id in range(1, 25):
+    #     run_inference_on_video(video_id)
+
+    run_inference_on_video(25, util.file_handler.load_json('detectron2_configs.json'), 'detectron2')
+    run_inference_on_video(25, util.file_handler.load_json('configs.json'), 'mmdetection')
+
