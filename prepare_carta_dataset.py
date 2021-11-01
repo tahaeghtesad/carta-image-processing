@@ -15,7 +15,7 @@ def load_video(path):
 
 gt_base_path = '/scratch/data/CARTA_DS2/gts/annotations_with_new_ids/'
 
-ground_truth = [{}] * 24
+ground_truth = [{}] * 26
 
 print('Loading and indexing ground truth')
 for i in range(1, 25):
