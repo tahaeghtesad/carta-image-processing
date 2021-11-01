@@ -1,6 +1,7 @@
 import util.file_handler
 import cv2
 import os
+from tqdm import tqdm
 
 from util.video_handler import VideoHandler
 
@@ -47,7 +48,7 @@ if not os.path.isdir(base_path):
 annotation_index = 1
 image_index = 0
 
-for i in range(1, 25):
+for i in tqdm(range(1, 25)):
     for frame_number, frame in enumerate(load_video(f'dataset/videos/{VideoHandler.get_file_name_by_id(i)}.avi')):
         pane_3 = VideoHandler.extract_panes(frame, 4)[3]
         dataset['images'].append({
