@@ -48,7 +48,7 @@ annotation_index = 1
 image_index = 0
 
 for i in range(1, 25):
-    for frame_number, frame in enumerate(load_video(f'dataset/videos/{VideoHandler.get_file_name_by_id(i)}')):
+    for frame_number, frame in enumerate(load_video(f'dataset/videos/{VideoHandler.get_file_name_by_id(i)}.avi')):
         pane_3 = VideoHandler.extract_panes(frame, 4)[3]
         dataset['images'].append({
                     'id': image_index,
