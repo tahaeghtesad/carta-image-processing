@@ -10,7 +10,8 @@ def load_video(path):
     success = True
     while success:
         success, frame = video_in.read()
-        yield frame
+        if success:
+            yield frame
 
 
 gt_base_path = '/scratch/data/CARTA_DS2/gts/annotations_with_new_ids/'
