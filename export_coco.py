@@ -27,7 +27,7 @@ class CocoExporter:
             # frame_id = image['file_name'].split('/')[1].split('.')[0]
 
             img = cv2.imread(f'{base_path}/{image["file_name"]}')
-            people = self.detector['engine'].infer(img, self.detection_threshold)
+            people = self.detector['engine'].infer([img], self.detection_threshold)[0]
             for person, score in people:
                 img = cv2.rectangle(img,
                                     pt1=(int(person[0]), int(person[1])),
@@ -98,5 +98,5 @@ if __name__ == '__main__':
     base_path = 'dataset/split_pane'
 
     for video_id in range(1, 25):
-        run_inference_on_video(25, util.file_handler.load_json('detectron2_configs.json'), 'detectron2')
         run_inference_on_video(25, util.file_handler.load_json('configs.json'), 'mmdetection')
+        run_inference_on_video(25, util.file_handler.load_json('detectron2_configs.json'), 'detectron2')

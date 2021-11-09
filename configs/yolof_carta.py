@@ -74,4 +74,4 @@ data = dict(
 )
 
 find_unused_parameters = True
-load_from = 'checkpoints/yolof_r50_c5_8x8_1x_coco_20210425_024427-8e864411.pth'
+# load_from = 'checkpoints/yolof_r50_c5_8x8_1x_coco_20210425_024427-8e864411.pth'

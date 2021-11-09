@@ -1,5 +1,6 @@
 import logging
 
+import numpy as np
 from detectron2.config import get_cfg
 from detectron2.engine.defaults import DefaultPredictor
 
@@ -22,13 +23,19 @@ class Detectron2Detector(Detector):
         cfg.freeze()
         return cfg
 
+    def batch_infer(self, img):
+        ret = []
+        for image in img:
+            ret.append(self.predictor(image))
+        return ret
+
     def infer(self, img, detection_threshold):
         assert isinstance(img, list), 'Only provide list of four panes'
-        predictions = self.predictor(img)
+        predictions = self.batch_infer(img)
         persons = [[] for _ in range(len(img))]
         for pane in range(len(img)):
-            if 'instances' in predictions:
-                instances = predictions['instances'].to(torch.device(self.device))
+            if 'instances' in predictions[pane]:
+                instances = predictions[pane]['instances'].to(torch.device(self.device))
 
                 boxes = instances.pred_boxes if instances.has("pred_boxes") else None
                 scores = instances.scores if instances.has("scores") else None
