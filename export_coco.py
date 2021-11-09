@@ -81,7 +81,7 @@ def run_inference_on_video(video_id, configs, framework):
                 'color': (255, 0, 0)
             }
 
-            exporter = CocoExporter(detector, 0.5)
+            exporter = CocoExporter(detector, 0.0)
 
             logger.info(f'Running export for model "{detector["model"]}" with variant "{detector["variant"]}" on video "video_{video_id}"...')
             new_dataset = exporter.infer_dataset(base_path, dataset)
