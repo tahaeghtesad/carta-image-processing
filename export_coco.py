@@ -97,9 +97,6 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     base_path = 'dataset/split_pane'
 
-    # for video_id in range(1, 25):
-    #     run_inference_on_video(video_id)
-
-    run_inference_on_video(25, util.file_handler.load_json('detectron2_configs.json'), 'detectron2')
-    run_inference_on_video(25, util.file_handler.load_json('configs.json'), 'mmdetection')
-
+    for video_id in range(1, 25):
+        run_inference_on_video(25, util.file_handler.load_json('detectron2_configs.json'), 'detectron2')
+        run_inference_on_video(25, util.file_handler.load_json('configs.json'), 'mmdetection')

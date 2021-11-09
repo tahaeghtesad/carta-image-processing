@@ -25,7 +25,7 @@ class Detectron2Detector(Detector):
     def infer(self, img, detection_threshold):
         assert isinstance(img, list), 'Only provide list of four panes'
         predictions = self.predictor(img)
-        persons = [[]] * len(img)
+        persons = [[] for _ in range(len(img))]
         for pane in range(len(img)):
             if 'instances' in predictions:
                 instances = predictions['instances'].to(torch.device(self.device))
