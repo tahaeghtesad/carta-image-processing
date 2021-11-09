@@ -1,9 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J yolof
-#SBATCH --gres=gpu:8
-#SBATCH --mem=250GB
-#SBATCH -N 1
+#SBATCH --gres=gpu:4
+#SBATCH --mem=125GB
 #SBATCH -A laszka
 #SBATCH -t 96:00:00
 
@@ -15,4 +14,4 @@ conda activate mmdetection
 
 cd /home/teghtesa/carta-image-processing || exit 255
 
-bash mmdetection/tools/dist_train.sh "$1" 8
+bash mmdetection/tools/dist_train.sh "$1" 4
