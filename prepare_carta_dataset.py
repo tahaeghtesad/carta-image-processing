@@ -2,8 +2,15 @@ import util.file_handler
 import cv2
 import os
 from tqdm import tqdm
+import numpy as np
+import asyncio
+import shutil
 
 from util.video_handler import VideoHandler
+
+
+async def write(frame, path):
+    cv2.imwrite(frame, path)
 
 
 def load_video(path):
@@ -13,61 +20,88 @@ def load_video(path):
         success, frame = video_in.read()
         if success:
             yield frame
+    video_in.release()
 
 
-gt_base_path = '/scratch/data/CARTA_DS2/gts/annotations_with_new_ids/'
+async def main():
 
-ground_truth = [{}] * 26
+    gt_base_path = 'dataset/gt/'
 
-print('Loading and indexing ground truth')
-for i in range(1, 25):
-    ground_truth[i] = util.file_handler.load_json(gt_base_path + f'video_{i}_gt.json')
-    for image in ground_truth[i]['images']:
-        image['annotations'] = []
+    ground_truth = [{} for _ in range(26)]
 
-    for annotation in ground_truth[i]['annotations']:
-        ground_truth[i]['images'][annotation['image_id'] - 1]['annotations'].append(annotation)
+    print('Loading and indexing ground truth')
+    for i in range(1, 25):
+        ground_truth[i] = util.file_handler.load_json(gt_base_path + f'video_{i}_gt.json')
+        for image in ground_truth[i]['images']:
+            image['annotations'] = []
 
-dataset = {
-    'images': [],
-    'annotations': [],
-    'categories': [
-        {
-            'id': 1,
-            'supercategory': 'none',
-            'name': 'head'
-        }
-    ]
-}
+        for annotation in ground_truth[i]['annotations']:
+            ground_truth[i]['images'][annotation['image_id'] - 1]['annotations'].append(annotation)
 
-base_path = 'dataset/carta'
+    dataset = {
+        'info': {},
+        'licenses': [],
+        'images': [],
+        'annotations': [],
+        'categories': [
+            {
+                'id': 1,
+                'supercategory': 'none',
+                'name': 'head'
+            }
+        ]
+    }
 
-if not os.path.isdir(base_path):
-    os.makedirs(base_path, exist_ok=True)
+    base_path = 'dataset/carta/'
 
-annotation_index = 1
-image_index = 0
+    if not os.path.isdir(base_path):
+        os.makedirs(base_path, exist_ok=True)
 
-for i in tqdm(range(1, 25)):
-    for frame_number, frame in enumerate(load_video(f'dataset/videos/{VideoHandler.get_file_name_by_id(i)}.avi')):
-        pane_3 = VideoHandler.extract_panes(frame, 4)[3]
-        dataset['images'].append({
-                    'id': image_index,
-                    'file_name': f'{image_index}.jpg',
-                    'width': pane_3.shape[1],
-                    'height': pane_3.shape[0]
-                })
-        cv2.imwrite(f'dataset/carta/{image_index}.jpg', pane_3)
+    annotation_index = 1
+    image_index = 0
 
-        for annotation in ground_truth[i]['images'][frame_number if i % 2 == 1 else frame_number // 4]['annotations']:
-            annotation['id'] = annotation_index
-            annotation['image_id'] = image_index
-            annotation['bbox'][0] -= 1920
-            annotation['bbox'][1] -= 1080
-            dataset['annotations'].append(annotation)
+    bgr = np.zeros(3)
 
-            annotation_index += 1
+    for i in range(1, 25):
+        for image in tqdm(ground_truth[i]['images']):
+            frame_number = int(image['file_name'].split('_')[1].split('.')[0])
 
-        image_index += 1
+            image_spec = {
+                'id': image_index,
+                'file_name': f'{image_index}.jpg',
+                'width': 1920,
+                'height': 1080
+            }
+            dataset['images'].append(image_spec)
+            shutil.copyfile(f'dataset/split_pane/video_{i}/pane_3/frame_{frame_number}.jpg',
+                            f'{base_path}{image_index}.jpg')
 
-    util.file_handler.write_json(f'dataset/carta/annotations.json', dataset)
+            for annotation in image['annotations']:
+                bbox = annotation['bbox']
+                bbox[0] -= 1920
+                bbox[1] -= 1080
+                new = {
+                    'id': annotation_index,
+                    'image_id': image_index,
+                    'area': bbox[2] * bbox[3],
+                    'bbox': bbox,
+                    'iscrowd': 0,
+                    'category_id': 1
+                }
+                dataset['annotations'].append(new)
+
+                annotation_index += 1
+
+            image_index += 1
+
+    util.file_handler.write_json(base_path + 'annotations.json', dataset)
+
+    print(f'Standard: {bgr/image_index}')
+    print(f'Total frames: {image_index}')
+    print(f'Total annotations: {annotation_index}')
+
+
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+

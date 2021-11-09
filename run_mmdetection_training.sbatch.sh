@@ -15,4 +15,4 @@ conda activate mmdetection
 
 cd /home/teghtesa/carta-image-processing || exit 255
 
-bash mmdetection/tools/dist_train.sh "configs/$1" 1
+bash mmdetection/tools/dist_train.sh "$1" 1

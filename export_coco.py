@@ -22,16 +22,16 @@ class CocoExporter:
         count = 0
         for image in tqdm(dataset['images']):
             video_id = image["file_name"].split('/')[0]
-            # pane_id = image["file_name"].split('/')[1]
-            # frame_id = image["file_name"].split('/')[2].split('.')[0]
-            frame_id = image['file_name'].split('/')[1].split('.')[0]
+            pane_id = image["file_name"].split('/')[1]
+            frame_id = image["file_name"].split('/')[2].split('.')[0]
+            # frame_id = image['file_name'].split('/')[1].split('.')[0]
 
             img = cv2.imread(f'{base_path}/{image["file_name"]}')
             people = self.detector['engine'].infer(img, self.detection_threshold)
-            for person in people:
+            for person, score in people:
                 img = cv2.rectangle(img,
-                                    pt1=(int(person[0][0]), int(person[0][1])),
-                                    pt2=(int(person[0][2]), int(person[0][3])),
+                                    pt1=(int(person[0]), int(person[1])),
+                                    pt2=(int(person[2]), int(person[3])),
                                     color=self.detector['color'],
                                     thickness=2)
                 dataset['annotations'].append({
@@ -40,20 +40,20 @@ class CocoExporter:
                     'category_id': 1,
                     'segmentation': [],
                     'attributes': {
-                        'score': float(person[1]),
+                        'score': float(score),
                     },
                     'bbox': [
-                        float(person[0][0]),  # x
-                        float(person[0][1]),  # y
-                        float(person[0][2] - person[0][0]),  # width
-                        float(person[0][3] - person[0][1])  # height
+                        float(person[0]),  # x
+                        float(person[1]),  # y
+                        float(person[2] - person[0]),  # width
+                        float(person[3] - person[1])  # height
                     ]
                 })
                 count += 1
             write_back_path = f'{base_path}/{video_id}_annotated/{self.detector["model"]}/{self.detector["variant"]}/'
             if not os.path.isdir(write_back_path):
                 os.makedirs(write_back_path, exist_ok=True)
-            cv2.imwrite(f'{write_back_path}/{frame_id}.jpg', img)
+            cv2.imwrite(f'{write_back_path}/pane_{pane_id}/{frame_id}.jpg', img)
 
         return dataset
 

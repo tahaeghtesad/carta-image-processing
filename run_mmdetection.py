@@ -17,10 +17,12 @@ def infer_video(video_id, detection_threshold, detector):
     dim = image.shape
     if not os.path.isdir(f'dataset/annotated/'):
         os.mkdir(f'dataset/annotated')
-    video_out = cv2.VideoWriter(f'dataset/annotated/{video_id}_{detector["model"]}_{detector["variant"]}_{detector["engine"].detection_class}.avi',
-                                cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
+    video_out = cv2.VideoWriter(f'dataset/annotated/{video_id}_{detector["model"]}_{detector["variant"]}_{detector["engine"].detection_class}.mp4',
+                                cv2.VideoWriter_fourcc(*'MPEG'),
                                 video_in.get(cv2.CAP_PROP_FPS),
-                                (dim[1], dim[0]))
+                                (dim[1], dim[0])
+                                # (1920, 1080)
+                                )
 
     count = 0
     pbar = tqdm(total=int(video_in.get(cv2.CAP_PROP_FRAME_COUNT)))
@@ -29,13 +31,15 @@ def infer_video(video_id, detection_threshold, detector):
             panes = VideoHandler.extract_panes(image)
             annotations = detector['engine'].infer(panes, detection_threshold)
             for i in range(len(panes)):
-                for person in annotations[i]:
+                for person, score in annotations[i]:
                     panes[i] = cv2.rectangle(panes[i],
                                              pt1=(int(person[0]), int(person[1])),
                                              pt2=(int(person[2]), int(person[3])),
                                              color=detector['color'],
                                              thickness=2)
+                    # print(person, score)
             video_out.write(VideoHandler.merge_panes(panes))
+            # video_out.write(panes[0])
 
             pbar.update(1)
             count += 1
@@ -59,10 +63,15 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     detector = {
         'model': 'yolof',
-        'variant': 'retrained',
-        'engine': MMDetectionDetector('new_yolof_config.py',
-                           'work_dirs/new_yolof_config/epoch_42.pth',
-                           'head'),
+        'variant': 'carta',
+        'engine': MMDetectionDetector(
+            # 'PedestrianDetection-NohNMS/configs/CrowdHuman/faster_rcnn_R_50_FPN_baseline_iou_0.5_noh_nms.yaml',
+            # 'checkpoints/noh_nms_model_final.pth',
+            'configs/yolof_carta.py',
+            'work_dirs/yolof_carta/latest.pth',
+            'head'
+        ),
         'color': (255, 0, 0)
     }
-    infer_video(1, 0.7, detector)
+    for i in range(1, 25):
+        infer_video(i, 0.5, detector)

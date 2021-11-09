@@ -113,6 +113,7 @@ class VideoHandler:
     def split(id, pane_count=4):
 
         file = VideoHandler.get_file_name_by_id(id)
+        print(f'Splitting video {id} at {file}')
 
         path = f'dataset/videos/{file}.avi'
         video = cv2.VideoCapture(path)
@@ -164,7 +165,7 @@ class VideoHandler:
             #     width=image.shape[1],
             #     height=image.shape[0]
             # ))
-            # cv2.imwrite(f'dataset/split/video_{id}/frame_{count}.jpg', image)
+            cv2.imwrite(f'dataset/split/video_{id}/frame_{count}.jpg', image)
 
             success, image = video.read()
 

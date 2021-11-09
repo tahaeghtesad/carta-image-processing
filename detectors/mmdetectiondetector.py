@@ -34,14 +34,14 @@ class MMDetectionDetector(Detector):
         self.logger.debug(f'Took {time.time() - start:.2f} (s) to infer.')
 
         try:
-            persons = [[]] * len(img)
+            persons = [[] for _ in range(len(img))]
             for pane in range(len(img)):
                 for each_person in result[pane][self.person_class_id]:
                     if each_person[4] > detection_threshold:
                         persons[pane].append(([each_person[0], each_person[1], each_person[2], each_person[3]],
                                               each_person[4]))
         except:
-            persons = [[]] * len(img)
+            persons = [[] for _ in range(len(img))]
             for pane in range(len(img)):
                 for each_person in result[pane][0][self.person_class_id]:
                     if each_person[4] > detection_threshold:

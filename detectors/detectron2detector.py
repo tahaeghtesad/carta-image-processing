@@ -23,17 +23,19 @@ class Detectron2Detector(Detector):
         return cfg
 
     def infer(self, img, detection_threshold):
+        assert isinstance(img, list), 'Only provide list of four panes'
         predictions = self.predictor(img)
-        ret = []
-        if 'instances' in predictions:
-            instances = predictions['instances'].to(torch.device(self.device))
+        persons = [[]] * len(img)
+        for pane in range(len(img)):
+            if 'instances' in predictions:
+                instances = predictions['instances'].to(torch.device(self.device))
 
-            boxes = instances.pred_boxes if instances.has("pred_boxes") else None
-            scores = instances.scores if instances.has("scores") else None
-            classes = instances.pred_classes.tolist() if instances.has("pred_classes") else None
+                boxes = instances.pred_boxes if instances.has("pred_boxes") else None
+                scores = instances.scores if instances.has("scores") else None
+                classes = instances.pred_classes.tolist() if instances.has("pred_classes") else None
 
-            for box, score, class_ in zip(boxes, scores, classes):
-                if score > detection_threshold:
-                    ret.append((box, score))
+                for box, score, class_ in zip(boxes, scores, classes):
+                    if score > detection_threshold:
+                        persons[pane].append((box, score))
 
-        return ret
+        return persons
