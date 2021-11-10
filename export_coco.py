@@ -72,7 +72,7 @@ def run_inference_on_video(video_id, configs, framework):
         for variant in configs[model].keys():
             logging.getLogger(__name__).info(f'Loading model {model}/{variant}.')
             logging.getLogger(__name__).info(f'config path: {configs[model][variant]["config"]}')
-            logging.getLogger(__name__).info(f'checkpoint path: {configs[model][variant]["checkpoint"]}-{type(configs[model][variant]["checkpoint"])}')
+            logging.getLogger(__name__).info(f'checkpoint path: {configs[model][variant]["checkpoint"]}')
 
             detector = {
                 'model': model,
@@ -98,5 +98,5 @@ if __name__ == '__main__':
     base_path = 'dataset/split_pane'
 
     for video_id in range(1, 25):
-        run_inference_on_video(25, util.file_handler.load_json('configs.json'), 'mmdetection')
-        run_inference_on_video(25, util.file_handler.load_json('detectron2_configs.json'), 'detectron2')
+        run_inference_on_video(video_id, util.file_handler.load_json('configs.json'), 'mmdetection')
+        run_inference_on_video(video_id, util.file_handler.load_json('detectron2_configs.json'), 'detectron2')

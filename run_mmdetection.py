@@ -68,7 +68,7 @@ if __name__ == '__main__':
             # 'PedestrianDetection-NohNMS/configs/CrowdHuman/faster_rcnn_R_50_FPN_baseline_iou_0.5_noh_nms.yaml',
             # 'checkpoints/noh_nms_model_final.pth',
             'configs/yolof_carta.py',
-            'work_dirs/yolof_carta/latest.pth',
+            'work_dirs/yolof_carta/epoch_12.pth',
             'head'
         ),
         'color': (255, 0, 0)

@@ -3,7 +3,7 @@ data_root = 'dataset/'
 crowdhuman_data_root = data_root + 'crowdhuman/'
 carta_data_root = data_root + 'carta/'
 
-classes = ('head', 'person', 'body')
+classes = ('head', )
 
 model = dict(
     type='FasterRCNN',
