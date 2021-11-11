@@ -1,0 +1,6 @@
+PedestrianDetection-NohNMS
+mmdetection/
+venv/
+work_dirs/
+crowdhuman/
+dataset/
