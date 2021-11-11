@@ -21,7 +21,7 @@ runner = dict(
 
 # use caffe img_norm
 img_norm_cfg = dict(
-    mean=[86.58323831, 85.55742237, 83.81266549], std=[1.0, 1.0, 1.0], to_rgb=False)
+    mean=[107.20933237, 112.40567983, 118.23271452], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),
