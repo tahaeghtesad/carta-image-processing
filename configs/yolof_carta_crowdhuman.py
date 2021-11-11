@@ -51,8 +51,6 @@ test_pipeline = [
 ]
 
 data = dict(
-    samples_per_gpu=8,
-    workers_per_gpu=8,
     train=dict(
         ann_file=[carta_data_root + 'train.json', crowdhuman_data_root + 'annotation_train.json'],
         img_prefix=[carta_data_root, crowdhuman_data_root + 'images_train/'],
