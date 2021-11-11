@@ -103,11 +103,18 @@ class VideoHandler:
             ]
 
     @staticmethod
-    def merge_panes(panes):
-        return np.hstack((
-            np.vstack((panes[0], panes[2])),
-            np.vstack((panes[1], panes[3]))
-        ))
+    def merge_panes(panes, pane_count=4):
+        if pane_count == 4:
+            return np.hstack((
+                np.vstack((panes[0], panes[2])),
+                np.vstack((panes[1], panes[3]))
+            ))
+        if pane_count == 6:
+            return np.hstack((
+                np.vstack((panes[0], panes[2], panes[4])),
+                np.vstack((panes[1], panes[3], panes[5]))
+            ))
+
 
     @staticmethod
     def split(id, pane_count=4):

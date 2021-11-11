@@ -4,8 +4,24 @@ import numpy as np
 from tqdm import tqdm
 
 import util.file_handler
+import imagesize
 
-mode = 'train'
+
+def normalize(box, dim):
+    return box
+
+
+def draw_box(img, bbox, color):
+    img = cv2.rectangle(img,
+                        pt1=(int(bbox[0]), int(bbox[1])),
+                        pt2=(int(bbox[0] + bbox[2]),
+                             int(bbox[1] + bbox[3])),
+                        color=color,
+                        thickness=2)
+    return img
+
+
+mode = 'val'
 print(f'Running for mode: {mode}')
 
 with open(f'crowdhuman/annotation_{mode}.odgt') as fd:
@@ -34,23 +50,26 @@ dataset = {
 }
 
 image_id = 0
-annotation_id = 0
+annotation_id = 1
 head_sizes = []
 rgb_sum = np.zeros(3)
 
 for line in tqdm(annotation_lines):
     jsonified = json.loads(line)
     name = jsonified['ID']
-    img = cv2.imread(f'crowdhuman/images_{mode}/{name}.jpg')
+    # img = cv2.imread(f'crowdhuman/images_{mode}/{name}.jpg')
+    # width, height = img.shape[1], img.shape[0]
+    width, height = imagesize.get(f'crowdhuman/images_{mode}/{name}.jpg')
+    shape = (height, width)
     dataset['images'].append({
         'file_name': f'{name}.jpg',
-        'height': img.shape[0],
-        'width': img.shape[1],
+        'height': shape[0],
+        'width': shape[1],
         'id': image_id
     })
 
-    for i in range(3):
-        rgb_sum[i] += img[:, :, i].mean()
+    # for i in range(3):
+    #     rgb_sum[i] += img[:, :, i].mean()
 
     for box in jsonified['gtboxes']:
         if box['tag'] == 'person' and\
@@ -58,9 +77,9 @@ for line in tqdm(annotation_lines):
                 ('occ' not in box['head_attr'] or box['head_attr']['occ'] == 0) and \
                 ('unsure' not in box['head_attr'] or box['head_attr']['unsure'] == 0):
 
-            vbox = box['vbox']  # visible box # 1
-            hbox = box['hbox']  # head box # 2
-            fbox = box['fbox']  # full box # 3
+            vbox = normalize(box['vbox'], shape)  # visible box # 1
+            hbox = normalize(box['hbox'], shape)  # head box # 2
+            fbox = normalize(box['fbox'], shape)  # full box # 3
 
             # visible, marked as person
             dataset['annotations'].append({
@@ -71,6 +90,7 @@ for line in tqdm(annotation_lines):
                 'id': annotation_id,
                 'image_id': image_id,
             })
+            # img = draw_box(img, vbox, (255, 0, 0))
             annotation_id += 1
 
             # head box
@@ -83,6 +103,7 @@ for line in tqdm(annotation_lines):
                 'image_id': image_id,
             })
             annotation_id += 1
+            # img = draw_box(img, hbox, (0, 255, 0))
             head_sizes.append(dataset['annotations'][-1]['area'])
 
             # Full body, marked as body
@@ -94,8 +115,12 @@ for line in tqdm(annotation_lines):
                 'id': annotation_id,
                 'image_id': image_id,
             })
+            # img = draw_box(img, fbox, (0, 0, 255))
             annotation_id += 1
 
+    # cv2.imshow(f'Image_{image_id}', img)
+    # cv2.waitKey()
+    # cv2.destroyWindow(f'Image_{image_id}')
     image_id += 1
 
 

@@ -1,17 +1,16 @@
-_base_ = ['../mmdetection/configs/faster_rcnn/faster_rcnn_r50_fpn_iou_1x_coco.py']
+_base_ = ['../mmdetection/configs/yolof/yolof_r50_c5_8x8_1x_coco.py']
 data_root = 'dataset/'
 crowdhuman_data_root = data_root + 'crowdhuman/'
 carta_data_root = data_root + 'carta/'
 
-classes = ('head', )
+# classes = ('head',)
+classes = ('head', 'body', 'person')
 
 model = dict(
-    type='FasterRCNN',
-    roi_head=dict(
-        bbox_head=dict(
-            num_classes=len(classes)
-        )
-    )
+    type='YOLOF',
+    bbox_head=dict(
+        type='YOLOFHead',
+        num_classes=len(classes))
 )
 
 dataset_type = 'CocoDataset'
@@ -20,8 +19,9 @@ runner = dict(
     max_epochs=12  # From base 12
 )
 
+# use caffe img_norm
 img_norm_cfg = dict(
-    mean=[107.20933237, 112.40567983, 118.23271452], std=[1.0, 1.0, 1.0], to_rgb=False)
+    mean=[86.58323831, 85.55742237, 83.81266549], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -51,26 +51,30 @@ test_pipeline = [
 ]
 
 data = dict(
-    workers_per_gpu=1,
+    samples_per_gpu=8,
+    workers_per_gpu=8,
     train=dict(
         ann_file=[carta_data_root + 'train.json', crowdhuman_data_root + 'annotation_train.json'],
-        img_prefix=[carta_data_root, crowdhuman_data_root + 'images/' + 'train/'],
+        img_prefix=[carta_data_root, crowdhuman_data_root + 'images_train/'],
         classes=classes,
         type=dataset_type,
         pipeline=train_pipeline
     ),
     val=dict(
-        ann_file=[carta_data_root + 'test.json'],
-        img_prefix=[carta_data_root],
+        ann_file=[carta_data_root + 'test.json', crowdhuman_data_root + 'annotation_val.json'],
+        img_prefix=[carta_data_root, crowdhuman_data_root + 'images_val/'],
         classes=classes,
         type=dataset_type,
         pipeline=test_pipeline
     ),
     test=dict(
-        ann_file=[carta_data_root + 'test.json'],
+        ann_file=carta_data_root + 'test.json',
         img_prefix=[carta_data_root],
         classes=classes,
         type=dataset_type,
         pipeline=test_pipeline
     )
 )
+
+# find_unused_parameters = True
+# load_from = 'checkpoints/yolof_r50_c5_8x8_1x_coco_20210425_024427-8e864411.pth'
