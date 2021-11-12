@@ -1,6 +1,6 @@
 _base_ = ['../mmdetection/configs/yolof/yolof_r50_c5_8x8_1x_coco.py']
 data_root = 'datasets/crowdhuman/'
-classes = ('person', 'head', 'body')
+classes = ('person',)
 
 model = dict(
     type='YOLOF',
@@ -46,24 +46,26 @@ test_pipeline = [
 ]
 
 data = dict(
-    workers_per_gpu=1,
     train=dict(
         ann_file=data_root + 'annotation_train.json',
         img_prefix=data_root + 'images/' + 'train/',
         classes=classes,
-        type=dataset_type
+        type=dataset_type,
+        pipeline=train_pipeline
     ),
     val=dict(
         ann_file=data_root + 'annotations/val_gt.json',
         img_prefix=data_root + 'images/' + 'val/',
         classes=classes,
-        type=dataset_type
+        type=dataset_type,
+        pipeline=test_pipeline
     ),
     test=dict(
         ann_file=data_root + 'annotation_test.json',
         img_prefix=data_root + 'images/' + 'test/',
         classes=classes,
-        type=dataset_type
+        type=dataset_type,
+        pipeline=train_pipeline
     )
 )
 
