@@ -52,7 +52,7 @@ train_dataset = [dict(
     ann_file=f'{data_root}/HT21/train/HT21-{i:02d}/gt/gt.txt',
     img_prefix=f'{data_root}/HT21/train/HT21-{i:02d}/img1/',
     classes=classes,
-    test_pipeline=train_pipeline
+    pipeline=train_pipeline
 ) for i in [1, 2, 3, 4]]
 
 test_dataset = [dict(
@@ -60,7 +60,7 @@ test_dataset = [dict(
     ann_file=f'{data_root}/HT21/test/HT21-{i:02d}/det/det.txt',
     img_prefix=f'{data_root}/HT21/test/HT21-{i:02d}/img1/',
     classes=classes,
-    test_pipeline=test_pipeline
+    pipeline=test_pipeline
 ) for i in [11, 12, 13, 14, 15]]
 
 data = dict(
