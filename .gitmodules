@@ -1,3 +1,6 @@
 [submodule "crowdhuman/PedestrianDetection-NohNMS"]
 	path = crowdhuman/PedestrianDetection-NohNMS
 	url = https://github.com/TencentYoutuResearch/PedestrianDetection-NohNMS
+[submodule "mmdetection"]
+	path = mmdetection
+	url = https://github.com/tahaeghtesad/mmdetection

@@ -1,8 +1,7 @@
 _base_ = ['../mmdetection/configs/yolof/yolof_r50_c5_8x8_1x_coco.py']
 data_root = 'dataset/'
-crowdhuman_data_root = data_root + 'crowdhuman/'
 
-classes = ('person',)
+classes = ('head',)
 
 model = dict(
     type='YOLOF',
@@ -10,8 +9,6 @@ model = dict(
         type='YOLOFHead',
         num_classes=len(classes))
 )
-
-dataset_type = 'CocoDataset'
 
 runner = dict(
     max_epochs=48  # From base 12
@@ -50,30 +47,28 @@ test_pipeline = [
         ])
 ]
 
+train_dataset = [dict(
+    type='MotHeadDataset',
+    ann_file=f'{data_root}/HT21/train/HT21-{i:02d}/gt/gt.txt',
+    img_prefix=f'{data_root}/HT21/train/HT21-{i:02d}/img1/',
+    classes=classes,
+    test_pipeline=train_pipeline
+) for i in [1, 2, 3, 4]]
+
+test_dataset = [dict(
+    type='MotHeadDataset',
+    ann_file=f'{data_root}/HT21/test/HT21-{i:02d}/det/det.txt',
+    img_prefix=f'{data_root}/HT21/test/HT21-{i:02d}/img1/',
+    classes=classes,
+    test_pipeline=test_pipeline
+) for i in [11, 12, 13, 14, 15]]
+
 data = dict(
     samples_per_gpu=12,
     workers_per_gpu=1,
-    train=dict(
-        ann_file=[crowdhuman_data_root + 'annotation_train.json'],
-        img_prefix=[crowdhuman_data_root + 'images_train/'],
-        classes=classes,
-        type=dataset_type,
-        pipeline=train_pipeline
-    ),
-    val=dict(
-        ann_file=[crowdhuman_data_root + 'annotation_val.json'],
-        img_prefix=[crowdhuman_data_root + 'images_val/'],
-        classes=classes,
-        type=dataset_type,
-        pipeline=test_pipeline
-    ),
-    test=dict(
-        ann_file=[crowdhuman_data_root + 'annotation_val.json'],
-        img_prefix=[crowdhuman_data_root + 'images_val/'],
-        classes=classes,
-        type=dataset_type,
-        pipeline=test_pipeline
-    )
+    train=train_dataset,
+    val=test_dataset,
+    test=test_dataset
 )
 
 load_from = 'checkpoints/yolof_r50_c5_8x8_1x_coco_20210425_024427-8e864411.pth'
