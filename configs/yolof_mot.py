@@ -67,7 +67,13 @@ data = dict(
     samples_per_gpu=12,
     workers_per_gpu=1,
     train=train_dataset,
-    val=dict(_delete_=True),
+    val=dict(
+        type='MotHeadDataset',
+        ann_file=f'{data_root}/HT21/test/HT21-11/det/det.txt',
+        img_prefix=f'{data_root}/HT21/test/HT21-11/img1/',
+        classes=classes,
+        pipeline=test_pipeline
+    ),
     test=test_dataset
 )
 
