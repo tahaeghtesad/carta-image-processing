@@ -1,5 +1,5 @@
 _base_ = ['../mmdetection/configs/yolof/yolof_r50_c5_8x8_1x_coco.py']
-data_root = 'dataset/'
+data_root = 'dataset'
 
 classes = ('head',)
 
@@ -67,7 +67,7 @@ data = dict(
     samples_per_gpu=12,
     workers_per_gpu=1,
     train=train_dataset,
-    val=test_dataset,
+    val=dict(_delete_=True),
     test=test_dataset
 )
 
