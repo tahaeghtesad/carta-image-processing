@@ -1,6 +1,8 @@
 _base_ = ['../mmdetection/configs/yolof/yolof_r50_c5_8x8_1x_coco.py']
 data_root = 'dataset'
 
+dataset_type = 'CocoDataset'
+
 classes = ('head',)
 
 model = dict(
@@ -11,7 +13,7 @@ model = dict(
 )
 
 runner = dict(
-    max_epochs=48  # From base 12
+    max_epochs=24  # From base 12
 )
 
 #img_norm_cfg = dict(
@@ -48,8 +50,8 @@ test_pipeline = [
 ]
 
 train_dataset = [dict(
-    type='MotHeadDataset',
-    ann_file=f'{data_root}/HT21/train/HT21-{i:02d}/gt/gt.txt',
+    type=dataset_type,
+    ann_file=f'{data_root}/HT21/train/HT21-{i:02d}/gt/gt.json',
     img_prefix=f'{data_root}/HT21/train/HT21-{i:02d}/img1/',
     classes=classes,
     pipeline=train_pipeline
@@ -62,8 +64,8 @@ train_dataset = [dict(
     )]
 
 test_dataset = [dict(
-    type='MotHeadDataset',
-    ann_file=f'{data_root}/HT21/test/HT21-{i:02d}/det/det.txt',
+    type=dataset_type,
+    ann_file=f'{data_root}/HT21/test/HT21-{i:02d}/det/det.json',
     img_prefix=f'{data_root}/HT21/test/HT21-{i:02d}/img1/',
     classes=classes,
     pipeline=test_pipeline
@@ -76,16 +78,10 @@ test_dataset = [dict(
     )]
 
 data = dict(
-    samples_per_gpu=12,
+    samples_per_gpu=4,
     workers_per_gpu=1,
     train=train_dataset,
-    val=dict(
-        type='CocoDataset',
-        ann_file=f'{data_root}/carta/test.json',
-        img_prefix=f'{data_root}/carta/',
-        classes=classes,
-        pipeline=train_pipeline
-    ),
+    val=test_dataset,
     test=test_dataset
 )
 

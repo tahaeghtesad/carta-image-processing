@@ -1,6 +1,8 @@
 _base_ = ['../mmdetection/configs/yolof/yolof_r50_c5_8x8_1x_coco.py']
 data_root = 'dataset'
 
+dataset_type = 'CocoDataset'
+
 classes = ('head',)
 
 model = dict(
@@ -11,7 +13,7 @@ model = dict(
 )
 
 runner = dict(
-    max_epochs=48  # From base 12
+    max_epochs=24  # From base 12
 )
 
 #img_norm_cfg = dict(
@@ -23,7 +25,7 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+    dict(type='Resize', img_scale=(1920, 1080), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='RandomShift', shift_ratio=0.5, max_shift_px=32),
     dict(type='Normalize', **img_norm_cfg),
@@ -35,7 +37,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1333, 800),
+        img_scale=(1920, 1080),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
@@ -48,16 +50,16 @@ test_pipeline = [
 ]
 
 train_dataset = [dict(
-    type='MotHeadDataset',
-    ann_file=f'{data_root}/HT21/train/HT21-{i:02d}/gt/gt.txt',
+    type=dataset_type,
+    ann_file=f'{data_root}/HT21/train/HT21-{i:02d}/gt/gt.json',
     img_prefix=f'{data_root}/HT21/train/HT21-{i:02d}/img1/',
     classes=classes,
     pipeline=train_pipeline
 ) for i in [1, 2, 3, 4]]
 
 test_dataset = [dict(
-    type='MotHeadDataset',
-    ann_file=f'{data_root}/HT21/test/HT21-{i:02d}/det/det.txt',
+    type=dataset_type,
+    ann_file=f'{data_root}/HT21/test/HT21-{i:02d}/det/det.json',
     img_prefix=f'{data_root}/HT21/test/HT21-{i:02d}/img1/',
     classes=classes,
     pipeline=test_pipeline
@@ -67,13 +69,7 @@ data = dict(
     samples_per_gpu=12,
     workers_per_gpu=1,
     train=train_dataset,
-    val=dict(
-        type='MotHeadDataset',
-        ann_file=f'{data_root}/HT21/test/HT21-11/det/det.txt',
-        img_prefix=f'{data_root}/HT21/test/HT21-11/img1/',
-        classes=classes,
-        pipeline=test_pipeline
-    ),
+    val=test_dataset,
     test=test_dataset
 )
 
