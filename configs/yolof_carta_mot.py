@@ -81,7 +81,13 @@ data = dict(
     samples_per_gpu=4,
     workers_per_gpu=1,
     train=train_dataset,
-    val=test_dataset,
+    val=dict(
+        type=dataset_type,
+        ann_file=f'{data_root}/HT21/test/HT21-11/det/det.json',
+        img_prefix=f'{data_root}/HT21/test/HT21-11/img1/',
+        classes=classes,
+        pipeline=test_pipeline
+    ),
     test=test_dataset
 )
 
