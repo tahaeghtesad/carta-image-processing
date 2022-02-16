@@ -15,7 +15,7 @@ model = dict(
 dataset_type = 'CocoDataset'
 
 runner = dict(
-    max_epochs=12  # From base 12
+    max_epochs=24  # From base 12
 )
 
 img_norm_cfg = dict(
@@ -48,8 +48,8 @@ test_pipeline = [
 ]
 
 data = dict(
-    samples_per_gpu=8,
-    workers_per_gpu=8,
+    samples_per_gpu=2,
+    workers_per_gpu=2,
     train=dict(
         ann_file=data_root + 'train.json',
         img_prefix=data_root,
@@ -73,4 +73,4 @@ data = dict(
     )
 )
 
-load_from = 'checkpoints/dh_faster_rcnn_r50_fpn_1x_coco_20200130-586b67df.pth'
+# load_from = 'checkpoints/dh_faster_rcnn_r50_fpn_1x_coco_20200130-586b67df.pth'
