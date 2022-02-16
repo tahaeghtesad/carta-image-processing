@@ -26,7 +26,7 @@ def infer_image(coco_file, detection_threshold, detector):
     for image in pbar:
         pbar.set_description(f'{image["file_name"]}')
         img = cv2.imread(coco_data + '/' + image["file_name"])
-        annotations = detector['engine'].infer_image([img], detection_threshold)
+        annotations = detector['engine'].infer([img], detection_threshold)
         for person, score in annotations[0]:
             img = cv2.rectangle(img,
                                 pt1=(int(person[0]), int(person[1])),
