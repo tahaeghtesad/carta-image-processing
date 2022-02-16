@@ -51,3 +51,5 @@ if __name__ == '__main__':
         'color': (0, 255, 0)
     }
 
+    infer_image('dataset/image_dataset/train.json', 0.3, detector)
+    infer_image('dataset/image_dataset/test.json', 0.3, detector)
