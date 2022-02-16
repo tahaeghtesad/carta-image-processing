@@ -41,15 +41,16 @@ if __name__ == '__main__':
                         format='%(asctime)s - %(name)s - %(threadName)s - %(levelname)s - %(message)s',
                         level=logging.INFO)
     logger = logging.getLogger(__name__)
-    detector = {
-        'name': 'faster-rcnn_10',
-        'engine': MMDetectionDetector(
-            'configs/faster_rcnn_cartai.py',
-            'work_dirs/faster_rcnn_cartai/epoch_10.pth',
-            'head'
-        ),
-        'color': (0, 255, 0)
-    }
+    for epoch in [10, 22, 36, 128]:
+        detector = {
+            'name': f'faster-rcnn_{epoch}',
+            'engine': MMDetectionDetector(
+                'configs/faster_rcnn_cartai.py',
+                f'work_dirs/faster_rcnn_cartai/epoch_{epoch}.pth',
+                'head'
+            ),
+            'color': (0, 255, 0)
+        }
 
-    infer_image('dataset/image_dataset/train.json', 0.3, detector)
-    infer_image('dataset/image_dataset/test.json', 0.3, detector)
+        infer_image('dataset/image_dataset/train.json', 0.3, detector)
+        infer_image('dataset/image_dataset/test.json', 0.3, detector)
