@@ -12,10 +12,12 @@ model = dict(
     )
 )
 
+# TODO decrease the learning rate, maybe 10-fold
+
 dataset_type = 'CocoDataset'
 
 runner = dict(
-    max_epochs=128  # From base 12
+    max_epochs=32  # From base 12
 )
 
 img_norm_cfg = dict(
@@ -26,11 +28,11 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', img_scale=(854, 480), keep_ratio=True),
-    dict(type='Corrupt', corruption='gaussian_noise', severity=1),
+    dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
-    dict(type='RandomShift', shift_ratio=1, max_shift_px=16),
     dict(type='Normalize', **img_norm_cfg),
+    dict(type='RandomShift', shift_ratio=1, max_shift_px=16),
+    dict(type='Corrupt', corruption='gaussian_noise', severity=2),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
@@ -62,14 +64,14 @@ data = dict(
         pipeline=train_pipeline
     ),
     val=dict(
-        ann_file=data_root + 'test.json',
+        ann_file=data_root + 'train.json',
         img_prefix=data_root,
         classes=classes,
         type=dataset_type,
         pipeline=test_pipeline
     ),
     test=dict(
-        ann_file=data_root + 'test.json',
+        ann_file=data_root + 'train.json',
         img_prefix=data_root,
         classes=classes,
         type=dataset_type,
