@@ -29,7 +29,7 @@ train_pipeline = [
     dict(type='Resize', img_scale=(320, 240), keep_ratio=True),
     dict(type='Corrupt', corruption='gaussian_noise', severity=1),
     dict(type='RandomFlip', flip_ratio=0.5),
-    dict(type='RandomShift', shift_ratio=100, max_shift_px=8),
+    dict(type='RandomShift', shift_ratio=1, max_shift_px=8),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
