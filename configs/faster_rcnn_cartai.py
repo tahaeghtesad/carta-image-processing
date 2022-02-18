@@ -27,7 +27,7 @@ train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', img_scale=(854, 480), keep_ratio=True),
-    dict(type='Corrupt', corruption='gaussian_noise', severity=.5),
+    dict(type='Corrupt', corruption='gaussian_noise', severity=1),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='RandomShift', shift_ratio=1, max_shift_px=16),
     dict(type='Normalize', **img_norm_cfg),
