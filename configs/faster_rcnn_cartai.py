@@ -23,16 +23,16 @@ runner = dict(
 img_norm_cfg = dict(
     mean=[101.8627779, 98.64721287, 99.20499043],
     std=[71.98746042, 74.29544418, 74.45167525],
-    to_rgb=False)
+    to_rgb=True)
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
+    dict(type='RandomShift', shift_ratio=0.5, max_shift_px=32),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='RandomShift', shift_ratio=1, max_shift_px=32),
-    dict(type='Corrupt', corruption='gaussian_noise', severity=2),
+    # dict(type='Corrupt', corruption='gaussian_noise', severity=2),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
