@@ -57,21 +57,21 @@ data = dict(
     samples_per_gpu=1,
     workers_per_gpu=1,
     train=dict(
-        ann_file=data_root + 'annotations.coco.json',
+        ann_file=data_root + 'train.json',
         img_prefix=data_root,
         classes=classes,
         type=dataset_type,
         pipeline=train_pipeline
     ),
     val=dict(
-        ann_file=data_root + 'annotations.coco.json',
+        ann_file=data_root + 'test.json',
         img_prefix=data_root,
         classes=classes,
         type=dataset_type,
         pipeline=test_pipeline
     ),
     test=dict(
-        ann_file=data_root + 'annotations.coco.json',
+        ann_file=data_root + 'test.json',
         img_prefix=data_root,
         classes=classes,
         type=dataset_type,
