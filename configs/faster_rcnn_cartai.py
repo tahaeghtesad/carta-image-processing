@@ -32,7 +32,7 @@ train_pipeline = [
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='RandomShift', shift_ratio=0.5, max_shift_px=32),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='Corrupt', corruption='gaussian_noise', severity=1),
+    # dict(type='Corrupt', corruption='gaussian_noise', severity=1), #Gausian noise makes the loss to become 'nan'
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
