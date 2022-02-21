@@ -12,12 +12,12 @@ model = dict(
     )
 )
 
-optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
 
 dataset_type = 'CocoDataset'
 
 runner = dict(
-    max_epochs=32  # From base 12
+    max_epochs=24  # From base 12
 )
 
 img_norm_cfg = dict(
@@ -32,7 +32,7 @@ train_pipeline = [
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='RandomShift', shift_ratio=0.5, max_shift_px=32),
     dict(type='Normalize', **img_norm_cfg),
-    # dict(type='Corrupt', corruption='gaussian_noise', severity=2),
+    dict(type='Corrupt', corruption='gaussian_noise', severity=1),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
