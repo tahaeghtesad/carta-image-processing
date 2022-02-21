@@ -12,7 +12,7 @@ model = dict(
     )
 )
 
-# TODO decrease the learning rate, maybe 10-fold
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 
 dataset_type = 'CocoDataset'
 
@@ -31,7 +31,7 @@ train_pipeline = [
     dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='RandomShift', shift_ratio=1, max_shift_px=16),
+    dict(type='RandomShift', shift_ratio=1, max_shift_px=32),
     dict(type='Corrupt', corruption='gaussian_noise', severity=2),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
@@ -57,21 +57,21 @@ data = dict(
     samples_per_gpu=1,
     workers_per_gpu=1,
     train=dict(
-        ann_file=data_root + 'train.json',
+        ann_file=data_root + 'annotations.coco.json',
         img_prefix=data_root,
         classes=classes,
         type=dataset_type,
         pipeline=train_pipeline
     ),
     val=dict(
-        ann_file=data_root + 'train.json',
+        ann_file=data_root + 'annotations.coco.json',
         img_prefix=data_root,
         classes=classes,
         type=dataset_type,
         pipeline=test_pipeline
     ),
     test=dict(
-        ann_file=data_root + 'train.json',
+        ann_file=data_root + 'annotations.coco.json',
         img_prefix=data_root,
         classes=classes,
         type=dataset_type,
