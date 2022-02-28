@@ -1,10 +1,9 @@
-import shutil
-
+import numpy as np
 import requests
 from tqdm import tqdm
+import cv2
 
 from util.file_handler import write_json
-from urllib.request import urlretrieve
 
 cvat = 'http://localhost:8080/api/v1'
 token = '6f7deb746dc05b3199222ad3cc7e2c3fd4faff69'
@@ -32,24 +31,36 @@ tasks = project['tasks']
 image_index = 0
 annotation_index = 1
 
+images = np.zeros((len(tasks), 1080, 1920, 3))
+
 for task in tqdm(tasks):
     task_id = task['id']
     name = task['name']
+
+    if name == 'carta_image_ds':
+        print('skipped')
+        continue
 
     # data = requests.get(f'{cvat}/tasks/{task_id}/data', headers=dict(Authorization=f'Token {token}'), params=dict(number=0, quality='original', type='chunk'), stream=True)
     # with open(f'{target}/{name}.jpg', 'wb') as f:
     #     for chunk in data.iter_content(chunk_size=128):
     #         f.write(chunk)
 
+    annotations = requests.get(f'{cvat}/tasks/{task_id}/annotations', headers=dict(Authorization=f'Token {token}')).json()['shapes']
+    if len(annotations) == 0:
+        print(f'{name} has no annotations')
+        continue
+
     dataset['images'].append({
         'file_name': f'{name}.jpg',
         'height': 1080,
         'width': 1920,
-        'id': image_index - 1
+        'id': image_index
     })
 
-    annotations = \
-    requests.get(f'{cvat}/tasks/{task_id}/annotations', headers=dict(Authorization=f'Token {token}')).json()['shapes']
+    img = cv2.imread(f'{target}/{name}.jpg')
+    images[image_index] = img
+
     for annotation in annotations:
         points = annotation['points']
         attributes = annotation['attributes']
@@ -70,3 +81,5 @@ for task in tqdm(tasks):
     image_index += 1
 
 write_json(f'{target}/annotations.coco.json', dataset)
+print(images.mean(axis=(0, 1, 2)))
+print(images.std(axis=(0, 1, 2)))

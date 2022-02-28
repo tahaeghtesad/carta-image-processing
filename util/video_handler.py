@@ -124,8 +124,8 @@ class VideoHandler:
 
         path = f'dataset/videos/{file}.avi'
         video = cv2.VideoCapture(path)
-        pbar = tqdm(total=video.get(cv2.CAP_PROP_FRAME_COUNT))
-        pbar.set_description(f'video_{id}')
+        # pbar = tqdm(total=video.get(cv2.CAP_PROP_FRAME_COUNT))
+        # pbar.set_description(f'video_{id}')
 
         dataset = {
             'images': [],
@@ -176,7 +176,7 @@ class VideoHandler:
 
             success, image = video.read()
 
-            pbar.update(1)
+            # pbar.update(1)
             count += 1
 
         if not os.path.isdir(f'dataset/split_pane/annotations'):
@@ -184,5 +184,5 @@ class VideoHandler:
         util.file_handler.write_json(f'dataset/split_pane/annotations/video_{id}.coco.json', dataset)
 
         thread_pool.close()
-        pbar.close()
+        # pbar.close()
         return count

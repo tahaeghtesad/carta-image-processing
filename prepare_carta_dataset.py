@@ -25,13 +25,13 @@ def load_video(path):
 
 async def main():
 
-    gt_base_path = 'dataset/gt/'
+    gt_base_path = 'dataset/annotations/'
 
     ground_truth = [{} for _ in range(26)]
 
     print('Loading and indexing ground truth')
     for i in range(1, 25):
-        ground_truth[i] = util.file_handler.load_json(gt_base_path + f'video_{i}_gt.json')
+        ground_truth[i] = util.file_handler.load_json(f'{gt_base_path}/{VideoHandler.get_coco_annotation_by_id(i)}/annotations/instances_default.json')
         for image in ground_truth[i]['images']:
             image['annotations'] = []
 
@@ -52,18 +52,23 @@ async def main():
         ]
     }
 
-    base_path = 'dataset/carta/'
+    base_path = 'C:\\Users\\Taha\\PycharmProjects\\carta-image-processing\\dataset\\carta_select\\'
 
     if not os.path.isdir(base_path):
         os.makedirs(base_path, exist_ok=True)
 
     annotation_index = 1
-    image_index = 0
+    image_index = 1
 
-    bgr = np.zeros(3)
+    for i in tqdm(range(1, 25)):
+        for j, image in enumerate(ground_truth[i]['images']):
 
-    for i in range(1, 25):
-        for image in tqdm(ground_truth[i]['images']):
+            # if not j == 5 or not j == len(ground_truth[i]['images']) - 5:
+            #     continue
+
+            if not (j == 5 or j == len(ground_truth[i]['images']) - 5):
+                continue
+
             frame_number = int(image['file_name'].split('_')[1].split('.')[0])
 
             image_spec = {
@@ -75,6 +80,8 @@ async def main():
             dataset['images'].append(image_spec)
             shutil.copyfile(f'dataset/split_pane/video_{i}/pane_3/frame_{frame_number}.jpg',
                             f'{base_path}{image_index}.jpg')
+
+            # cv2.imwrite(f'{base_path}/{image_index}.jpg', VideoHandler.extract_panes(image, 4)[3])
 
             for annotation in image['annotations']:
                 bbox = annotation['bbox']
@@ -95,10 +102,6 @@ async def main():
             image_index += 1
 
     util.file_handler.write_json(base_path + 'annotations.json', dataset)
-
-    print(f'Standard: {bgr/image_index}')
-    print(f'Total frames: {image_index}')
-    print(f'Total annotations: {annotation_index}')
 
 
 if __name__ == '__main__':

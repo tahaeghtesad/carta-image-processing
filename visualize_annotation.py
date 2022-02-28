@@ -15,8 +15,8 @@ def draw_box(img, bbox):
     return img
 
 
-base_path = 'dataset/image_dataset/'
-annotation_coco = util.file_handler.load_json(base_path + 'carta_image_dataset.json')
+base_path = 'C:\\Users\\Taha\\PycharmProjects\\carta-image-processing\\dataset\\carta_select\\'
+annotation_coco = util.file_handler.load_json(base_path + 'annotations.json')
 
 # base_path = 'dataset/carta/'
 # annotation_coco = util.file_handler.load_json(base_path + 'annotations.json')
@@ -25,17 +25,28 @@ for image in annotation_coco['images']:
     image['annotations'] = []
 
 for annotation in annotation_coco['annotations']:
-    annotation_coco['images'][annotation['image_id']]['annotations'].append(annotation)
+    annotation_coco['images'][annotation['image_id'] - 1]['annotations'].append(annotation)
 
-for i in range(100):
-    image_number_to_display = random.randrange(0, len(annotation_coco['images']))
+# for i in range(100):
+#     image_number_to_display = random.randrange(0, len(annotation_coco['images']))
+#
+#     path = base_path + annotation_coco['images'][image_number_to_display]['file_name']
+#     print(path)
+#     img = cv2.imread(path)
+#     for annotation in annotation_coco['images'][image_number_to_display]['annotations']:
+#         if annotation['attributes']['score'] > 0.5:
+        # img = draw_box(img, annotation['bbox'])
+    # cv2.imshow(f'Image', img)
+    # cv2.waitKey()
+    # cv2.destroyWindow('Image')
 
-    path = base_path + annotation_coco['images'][image_number_to_display]['file_name']
-    print(path)
+for image in annotation_coco['images']:
+    path = base_path + image['file_name']
+
     img = cv2.imread(path)
-    for annotation in annotation_coco['images'][image_number_to_display]['annotations']:
-        # if annotation['attributes']['score'] > 0.5:
+    for annotation in image['annotations']:
         img = draw_box(img, annotation['bbox'])
-    cv2.imshow(f'Image', img)
+
+    cv2.imshow(f'{image["file_name"]}', img)
     cv2.waitKey()
-    cv2.destroyWindow('Image')
+    cv2.destroyWindow(f'{image["file_name"]}' )
