@@ -1,8 +1,8 @@
 _base_ = ['../mmdetection/configs/faster_rcnn/faster_rcnn_r50_fpn_iou_1x_coco.py']
 
 # data_root = 'dataset/image_dataset/'
-new_root = 'dataset/image_dataset/'
-old_root = 'dataset/carta_select/'
+image_dataset_root = 'dataset/image_dataset/'
+select_image_dataset_root = 'dataset/carta_select/'
 
 classes = ('head',)
 
@@ -60,25 +60,25 @@ data = dict(
     samples_per_gpu=1,
     workers_per_gpu=1,
     train=dict(
-        ann_file=[new_root + 'train.json', old_root + 'train.json'],
-        img_prefix=[new_root, old_root],
+        ann_file=[image_dataset_root + 'train.json', select_image_dataset_root + 'train.json'],
+        img_prefix=[image_dataset_root, select_image_dataset_root],
         classes=classes,
         type=dataset_type,
         pipeline=train_pipeline
     ),
     val=dict(
-        ann_file=[new_root + 'test.json', old_root + 'test.json'],
-        img_prefix=[new_root, old_root],
+        ann_file=[image_dataset_root + 'test.json', select_image_dataset_root + 'test.json'],
+        img_prefix=[image_dataset_root, select_image_dataset_root],
         classes=classes,
         type=dataset_type,
-        pipeline=train_pipeline
+        pipeline=test_pipeline
     ),
     test=dict(
-        ann_file=[new_root + 'test.json', old_root + 'test.json'],
-        img_prefix=[new_root, old_root],
+        ann_file=[image_dataset_root + 'test.json', select_image_dataset_root + 'test.json'],
+        img_prefix=[image_dataset_root, select_image_dataset_root],
         classes=classes,
         type=dataset_type,
-        pipeline=train_pipeline
+        pipeline=test_pipeline
     )
 )
 
