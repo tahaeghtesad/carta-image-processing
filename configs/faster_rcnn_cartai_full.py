@@ -1,8 +1,8 @@
 _base_ = ['../mmdetection/configs/faster_rcnn/faster_rcnn_r50_fpn_iou_1x_coco.py']
 
 # data_root = 'dataset/image_dataset/'
-new_root = 'dataset/image_dataset'
-old_root = 'dataset/carta_select'
+new_root = 'dataset/image_dataset/'
+old_root = 'dataset/carta_select/'
 
 classes = ('head',)
 
