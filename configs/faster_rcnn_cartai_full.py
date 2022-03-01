@@ -61,21 +61,21 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         ann_file=[new_root + 'train.json', old_root + 'train.json'],
-        img_prefix=[new_root + old_root],
+        img_prefix=[new_root, old_root],
         classes=classes,
         type=dataset_type,
         pipeline=train_pipeline
     ),
     val=dict(
         ann_file=[new_root + 'test.json', old_root + 'test.json'],
-        img_prefix=[new_root + old_root],
+        img_prefix=[new_root, old_root],
         classes=classes,
         type=dataset_type,
         pipeline=train_pipeline
     ),
     test=dict(
         ann_file=[new_root + 'test.json', old_root + 'test.json'],
-        img_prefix=[new_root + old_root],
+        img_prefix=[new_root, old_root],
         classes=classes,
         type=dataset_type,
         pipeline=train_pipeline
