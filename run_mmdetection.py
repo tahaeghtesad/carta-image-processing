@@ -87,7 +87,7 @@ def infer_video(path, file, detection_threshold, detector):
                                              pt2=(int(person[2]), int(person[3])),
                                              color=detector['color'],
                                              thickness=2)
-                    annotations += 1
+                    annotation_id += 1
                     # print(person, score)
             # video_out.write(VideoHandler.merge_panes(panes))
             video_out.write(panes[0])
