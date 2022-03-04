@@ -21,11 +21,14 @@ annotation_coco = util.file_handler.load_json(base_path + 'annotations.json')
 # base_path = 'dataset/carta/'
 # annotation_coco = util.file_handler.load_json(base_path + 'annotations.json')
 
+dataset = {}
+
 for image in annotation_coco['images']:
-    image['annotations'] = []
+    dataset[image['id']] = image
+    dataset[image['id']]['annotations'] = []
 
 for annotation in annotation_coco['annotations']:
-    annotation_coco['images'][annotation['image_id'] - 1]['annotations'].append(annotation)
+    dataset[annotation['image_id']]['annotations'].append(annotation)
 
 # for i in range(100):
 #     image_number_to_display = random.randrange(0, len(annotation_coco['images']))
@@ -40,7 +43,7 @@ for annotation in annotation_coco['annotations']:
     # cv2.waitKey()
     # cv2.destroyWindow('Image')
 
-for image in annotation_coco['images']:
+for image_id, image in dataset.items():
     path = base_path + image['file_name']
 
     img = cv2.imread(path)
